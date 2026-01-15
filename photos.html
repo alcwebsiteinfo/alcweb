@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Members Photo Gallery</title>
+  <style>
+    :root{
+      --gap:12px;
+      --bg:#f6f7fb;
+      --card:#fff;
+      --accent:#0366d6;
+      --muted:#6b7280;
+    }
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+      background:var(--bg);
+      color:#111827;
+      -webkit-font-smoothing:antialiased;
+    }
+
+    .container{
+      max-width:1100px;
+      margin:28px auto;
+      padding:18px;
+    }
+
+    header{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:18px;
+    }
+    header h1{margin:0;font-size:1.25rem}
+    header p{margin:0;color:var(--muted);font-size:0.95rem}
+
+    .controls{
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+
+    button, a.primary {
+      background:var(--accent);
+      color:#fff;
+      border:0;
+      padding:8px 12px;
+      border-radius:8px;
+      cursor:pointer;
+      text-decoration:none;
+      font-weight:600;
+    }
+    .btn-ghost {
+      background:transparent;
+      color:var(--accent);
+      border:1px solid rgba(3,102,214,0.12);
+      padding:8px 10px;
+      border-radius:8px;
+    }
+
+    /* gallery grid */
+    .gallery{
+      display:grid;
+      gap:var(--gap);
+      grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+    }
+    .card{
+      background:var(--card);
+      border-radius:10px;
+      overflow:hidden;
+      box-shadow:0 1px 0 rgba(0,0,0,0.04);
+      display:flex;
+      flex-direction:column;
+      align-items:stretch;
+    }
+    .thumb{
+      width:100%;
+      aspect-ratio: 4/3;
+      object-fit:cover;
+      display:block;
+      cursor:pointer;
+      background:linear-gradient(90deg,#eee,#f8f8f8);
+    }
+    .meta{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:8px 10px;
+      gap:8px;
+    }
+    .meta .name{font-size:0.9rem; color:#111827; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+    .meta .actions{display:flex; gap:8px; align-items:center}
+
+    .download-link{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:6px 8px;
+      border-radius:6px;
+      text-decoration:none;
+      color:var(--accent);
+      font-weight:600;
+      font-size:0.88rem;
+      border:1px solid rgba(3,102,214,0.08);
+      background:#fff;
+    }
+
+    /* modal/lightbox */
+    .modal{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      background:rgba(0,0,0,0.5);
+      z-index:1000;
+      padding:20px;
+    }
+    .modal.open{display:flex}
+    .modal-content{
+      max-width:95%;
+      max-height:95%;
+      background:transparent;
+      border-radius:10px;
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .modal-img{
+      max-width:100%;
+      max-height:calc(100vh - 180px);
+      border-radius:8px;
+      display:block;
+      margin:0 auto;
+      box-shadow:0 12px 40px rgba(0,0,0,0.45);
+    }
+    .modal-footer{
+      display:flex;
+      justify-content:space-between;
+      gap:8px;
+      align-items:center;
+      background:rgba(255,255,255,0.95);
+      padding:8px 10px;
+      border-radius:8px;
+    }
+    .close-btn{
+      background:#fff;
+      border:1px solid rgba(0,0,0,0.05);
+      padding:6px 8px;
+      border-radius:6px;
+      cursor:pointer;
+    }
+
+    .empty{
+      text-align:center;
+      color:var(--muted);
+      padding:40px 10px;
+      background:var(--card);
+      border-radius:8px;
+    }
+
+    @media (max-width:520px){
+      header{flex-direction:column;align-items:flex-start;gap:10px}
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="app">
+    <header>
+      <div>
+        <h1>Members Photo Gallery</h1>
+        <p>Click a photo to preview. Use the download button to save a copy.</p>
+      </div>
+      <div class="controls">
+        <!-- If you want "Download All" functionality, see the comment in the JS for enabling JSZip -->
+        <button id="refresh" class="btn-ghost" title="Reload list">Refresh</button>
+        <a id="downloadAll" class="primary" href="#" style="display:none;">Download Selected</a>
+      </div>
+    </header>
+
+    <main>
+      <div id="gallery" class="gallery" aria-live="polite"></div>
+      <div id="empty" class="empty" style="display:none;">
+        No photos found. Add images to the "images/" folder and update the images list in this file.
+      </div>
+    </main>
+  </div>
+
+  <!-- modal preview -->
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-content" role="document">
+      <img id="modalImg" class="modal-img" src="" alt="Preview image" />
+      <div class="modal-footer">
+        <div>
+          <a id="modalOpen" href="#" target="_blank" rel="noopener" class="download-link">Open original</a>
+          <a id="modalDownload" class="download-link" href="#" download>Download</a>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button id="prevBtn" class="btn-ghost" title="Previous">◀</button>
+          <button id="nextBtn" class="btn-ghost" title="Next">▶</button>
+          <button id="closeBtn" class="close-btn">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /***********************************************
+     * Usage:
+     * - Place your image files in a folder next to this HTML file, e.g. "images/".
+     * - Edit the "images" array below to list filenames or relative paths.
+     * - Each image will be shown with a preview and a download button.
+     *
+     * Optional advanced automation:
+     * - If your server can provide a JSON list of filenames (e.g. at /images/list.json),
+     *   replace the manual array with a fetch() to that endpoint and call render().
+     *
+     * Notes for GitHub Pages:
+     * - When hosted on GitHub Pages, keep the paths relative (e.g. "images/photo.jpg").
+     ***********************************************/
+
+    // === MANUAL IMAGE LIST ===
+    // Add or remove image paths here.
+    // Example: 'images/photo1.jpg', 'images/2026-01-14-group.png'
+    const images = [
+      // <- replace these with your actual image filenames
+      'images/photo1.jpg',
+      'images/photo2.jpg',
+      'images/photo3.jpg'
+    ];
+
+    // === App state ===
+    const galleryEl = document.getElementById('gallery');
+    const emptyEl = document.getElementById('empty');
+    const modal = document.getElementById('modal');
+    const modalImg = document.getElementById('modalImg');
+    const modalDownload = document.getElementById('modalDownload');
+    const modalOpen = document.getElementById('modalOpen');
+    const closeBtn = document.getElementById('closeBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const refreshBtn = document.getElementById('refresh');
+
+    let currentIndex = -1;
+    let renderedList = [];
+
+    function filenameFromPath(path){
+      return path.split('/').pop();
+    }
+
+    function createCard(src, index){
+      const card = document.createElement('figure');
+      card.className = 'card';
+      card.dataset.index = index;
+
+      const img = document.createElement('img');
+      img.className = 'thumb';
+      img.src = src;
+      img.alt = filenameFromPath(src);
+      img.loading = 'lazy';
+      img.onclick = ()=>openModal(index);
+
+      const meta = document.createElement('figcaption');
+      meta.className = 'meta';
+
+      const name = document.createElement('div');
+      name.className = 'name';
+      name.textContent = filenameFromPath(src);
+
+      const actions = document.createElement('div');
+      actions.className = 'actions';
+
+      const dl = document.createElement('a');
+      dl.className = 'download-link';
+      dl.href = src;
+      dl.setAttribute('download', filenameFromPath(src));
+      dl.textContent = 'Download';
+
+      actions.appendChild(dl);
+      meta.appendChild(name);
+      meta.appendChild(actions);
+
+      card.appendChild(img);
+      card.appendChild(meta);
+      return card;
+    }
+
+    function render(){
+      galleryEl.innerHTML = '';
+      renderedList = images.filter(Boolean);
+      if(!renderedList.length){
+        emptyEl.style.display = '';
+        galleryEl.style.display = 'none';
+        return;
+      } else {
+        emptyEl.style.display = 'none';
+        galleryEl.style.display = '';
+      }
+
+      renderedList.forEach((src, i) => {
+        const c = createCard(src, i);
+        galleryEl.appendChild(c);
+      });
+    }
+
+    function openModal(i){
+      if(i < 0 || i >= renderedList.length) return;
+      currentIndex = i;
+      const src = renderedList[i];
+      modalImg.src = src;
+      modalImg.alt = filenameFromPath(src);
+      modalDownload.href = src;
+      modalDownload.setAttribute('download', filenameFromPath(src));
+      modalOpen.href = src;
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      // focus close button for accessibility
+      closeBtn.focus();
+    }
+
+    function closeModal(){
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+      modalImg.src = '';
+      currentIndex = -1;
+    }
+
+    function next(){
+      if(renderedList.length === 0) return;
+      currentIndex = (currentIndex + 1 + renderedList.length) % renderedList.length;
+      openModal(currentIndex);
+    }
+    function prev(){
+      if(renderedList.length === 0) return;
+      currentIndex = (currentIndex - 1 + renderedList.length) % renderedList.length;
+      openModal(currentIndex);
+    }
+
+    // keyboard navigation
+    window.addEventListener('keydown', (e)=>{
+      if(modal.classList.contains('open')){
+        if(e.key === 'Escape') closeModal();
+        if(e.key === 'ArrowRight') next();
+        if(e.key === 'ArrowLeft') prev();
+      }
+    });
+
+    // modal controls
+    closeBtn.addEventListener('click', closeModal);
+    nextBtn.addEventListener('click', next);
+    prevBtn.addEventListener('click', prev);
+    modal.addEventListener('click', (e)=>{
+      if(e.target === modal) closeModal(); // click on backdrop closes
+    });
+
+    refreshBtn.addEventListener('click', ()=>{
+      // If you implement server-side listing, call fetch here.
+      // For now, manual refresh just re-renders the current images array.
+      render();
+    });
+
+    // initial render
+    render();
+
+    /************************************************************************
+     * Optional: "Download All" feature (creates a zip in the browser)
+     * - Requires JSZip (https://stuk.github.io/jszip/) and FileSaver (optional).
+     * - To enable: include JSZip via CDN and uncomment the code below.
+     *
+     * Example (add into the <head> or before this script runs):
+     * <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+     * <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+     *
+     * Then implement the downloadAll() function to fetch each image as blob and add to zip.
+     ************************************************************************/
+
+    // If you want "Download All" enabled, implement downloadAll() using JSZip and show button:
+    // document.getElementById('downloadAll').style.display = '';
+
+  </script>
+</body>
+</html>
