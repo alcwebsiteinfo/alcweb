@@ -1,12 +1,6 @@
-// assets/gallery.js
+// assets/gallery.js (updated)
 // Loads images from images/list.json (if present) and supports client-side uploads (in-memory).
-// Features:
-// - Auto-load images listed in images/list.json on page load
-// - Add images via file input or drag & drop
-// - Show thumbnails in a responsive grid
-// - View a larger image in a modal
-// - Download an image (anchor with download)
-// - Remove single images or clear all
+// Handles double-encoded URLs (e.g. %2520) by fully decoding then encoding once.
 
 (() => {
   const fileInput = document.getElementById('fileInput');
@@ -125,10 +119,11 @@
   // Load images listed in images/list.json
   async function loadListJson() {
     const listUrl = 'images/list.json';
+    console.info('Attempting to fetch', listUrl);
     try {
       const resp = await fetch(listUrl, { cache: 'no-cache' });
       if (!resp.ok) {
-        console.info('images/list.json not found or not accessible; no static images loaded.');
+        console.warn(`Failed to load ${listUrl}: ${resp.status} ${resp.statusText}`);
         return;
       }
       const data = await resp.json();
@@ -136,10 +131,10 @@
         console.warn('images/list.json is not an array.');
         return;
       }
-      // data items: { url, name?, size? } -- url should be reachable (relative or absolute)
       for (const imgMeta of data) {
         await addServerImage(imgMeta);
       }
+      console.info('Loaded images from list.json');
     } catch (err) {
       console.warn('Could not load images/list.json:', err);
     }
@@ -150,23 +145,45 @@
     try {
       const rawUrl = imgMeta.url || imgMeta.path;
       if (!rawUrl) return;
-      // Ensure the URL is properly encoded for fetch
-      const safeUrl = encodeURI(rawUrl);
+
+      // Normalize URL:
+      // 1) Fully decode any repeated encodings (handles %2520 -> %20 -> ' ')
+      // 2) Then encode once for fetch
+      let normalized = rawUrl;
+      try {
+        // If encoded multiple times, decode repeatedly until no %25 remains
+        // (e.g. "%2520" -> "%20" -> " ")
+        while (/%25/.test(normalized)) {
+          normalized = decodeURIComponent(normalized);
+        }
+        // If there are still percent-escapes like %20, decode them to get real characters
+        normalized = decodeURIComponent(normalized);
+      } catch (e) {
+        // ignore decode errors and use the original rawUrl
+        normalized = rawUrl;
+      }
+      const safeUrl = encodeURI(normalized);
+
+      console.debug('Fetching image', { rawUrl, normalized, safeUrl });
+
       const resp = await fetch(safeUrl);
       if (!resp.ok) {
         console.warn('Failed to fetch image:', safeUrl, resp.status);
         return;
       }
       const blob = await resp.blob();
-      // Only handle image blobs
-      if (!blob.type.startsWith('image/')) return;
+      if (!blob.type.startsWith('image/')) {
+        console.warn('Fetched resource is not an image:', safeUrl);
+        return;
+      }
+
       const reader = new FileReader();
       await new Promise((res, rej) => {
         reader.onload = (e) => {
           const id = cryptoRandomId();
           const item = {
             id,
-            name: imgMeta.name || rawUrl.split('/').pop(),
+            name: imgMeta.name || safeUrl.split('/').pop(),
             src: e.target.result,
             size: imgMeta.size || blob.size || 0
           };
