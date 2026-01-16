@@ -1,0 +1,46 @@
+/* Basic gallery styles */
+#dropArea {
+  background: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.01));
+  transition: background .15s, border-color .15s;
+}
+#dropArea.dragover {
+  background: linear-gradient(180deg, rgba(0,123,255,0.06), rgba(0,123,255,0.03));
+  border-color: #0d6efd;
+  color: #0d6efd;
+}
+
+.gallery-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.5rem;
+}
+
+.gallery-thumb {
+  width: 100%;
+  height: 12rem;
+  object-fit: cover;
+  display: block;
+}
+
+/* overlay action buttons */
+.gallery-actions {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  display: flex;
+  gap: 6px;
+}
+
+.gallery-actions .btn {
+  backdrop-filter: blur(4px);
+  opacity: 0.95;
+}
+
+/* small caption area */
+.gallery-caption {
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
