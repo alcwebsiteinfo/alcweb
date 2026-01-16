@@ -48,13 +48,12 @@
       <small class="text-muted">Upload, browse and download images</small>
     </div>
 
-    <!-- Upload controls -->
+    <!-- Upload controls (note: uploads are client-only; they will not remove server images) -->
     <div class="mb-3">
       <label class="form-label">Add images</label>
       <div class="d-flex gap-2 flex-wrap">
         <input id="fileInput" type="file" accept="image/*" multiple class="form-control w-auto">
-        <button id="clearAll" type="button" class="btn btn-outline-danger">Clear All</button>
-        <!-- Optional: a button to show how to load server images (see script comment) -->
+        <!-- Clear All removed to prevent deletion -->
         <button id="loadServer" type="button" class="btn btn-outline-secondary">Load Server Images</button>
       </div>
       <div id="dropArea" class="border rounded mt-3 p-4 text-center text-muted">
