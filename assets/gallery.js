@@ -1,6 +1,13 @@
 // assets/gallery.js (updated)
 // Loads images from images/list.json (if present) and supports client-side uploads (in-memory).
 // Handles double-encoded URLs (e.g. %2520) by fully decoding then encoding once.
+//
+// To keep the server list in sync with actual files, run the helper script
+// ``scripts/generate_list.py`` from the project root; it will re‑scan
+// ``images/`` and overwrite ``images/list.json`` with all recognized
+// image files.  This is much easier than manually editing the JSON when new
+// pictures arrive.
+
 
 (() => {
   const fileInput = document.getElementById('fileInput');
