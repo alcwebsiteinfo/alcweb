@@ -57,17 +57,23 @@
     </div>
 
     <!-- Upload controls (note: uploads are client-only; they will not remove server images) -->
-    <div class="mb-3">
-      <label class="form-label">Add images</label>
-      <div class="d-flex gap-2 flex-wrap">
-        <input id="fileInput" type="file" accept="image/*" multiple class="form-control w-auto">
-        <!-- Clear All removed to prevent deletion -->
-        <button id="loadServer" type="button" class="btn btn-outline-secondary">Load Server Images</button>
+    <div class="card p-4 mb-4 shadow-sm border-0 bg-white">
+      <div class="d-flex flex-column flex-md-row align-items-start gap-3 gap-md-4">
+        <div>
+          <label class="form-label mb-1">Add images</label>
+          <input id="fileInput" type="file" accept="image/*" multiple class="form-control">
+        </div>
+        <div class="align-self-end">
+          <button id="loadServer" type="button" class="btn btn-outline-primary">Load server images</button>
+        </div>
       </div>
-      <div id="dropArea" class="border rounded mt-3 p-4 text-center text-muted">
-        Drag & drop images here or use the file picker
+      <div id="dropArea" class="border rounded-3 mt-4 p-4 text-center text-muted">
+        Drag & drop images here or use the file picker.
       </div>
     </div>
+
+    <!-- Year grouping for server images (populated after loading list.json) -->
+    <div id="yearList" class="mb-4"></div>
 
     <!-- Gallery grid -->
     <div id="gallery" class="row g-3"></div>

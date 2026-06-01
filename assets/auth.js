@@ -58,6 +58,20 @@ function updateAuthLink() {
   }
 }
 
+function updateActiveNavLink() {
+  const currentPage = window.location.pathname.replace(/^.*\//, '') || 'index.html';
+  document.querySelectorAll('.navbar-nav .nav-link').forEach((link) => {
+    const href = link.getAttribute('href')?.replace(/^.*\//, '') || '';
+    if (href === currentPage) {
+      link.classList.add('active');
+      link.setAttribute('aria-current', 'page');
+    } else {
+      link.classList.remove('active');
+      link.removeAttribute('aria-current');
+    }
+  });
+}
+
 function handleLoginForm(event) {
   event.preventDefault();
   const username = document.getElementById('username')?.value?.trim();
@@ -87,6 +101,7 @@ window.addEventListener('DOMContentLoaded', () => {
     requireAuth();
   }
   updateAuthLink();
+  updateActiveNavLink();
   if (currentPage === LOGIN_PAGE) {
     const loginForm = document.getElementById('loginForm');
     loginForm?.addEventListener('submit', handleLoginForm);

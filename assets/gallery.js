@@ -138,13 +138,109 @@
         console.warn('images/list.json is not an array.');
         return;
       }
+
+      // Group images by year (try to extract a 4-digit year from name or url)
+      const byYear = {};
       for (const imgMeta of data) {
-        await addServerImage(imgMeta);
+        const probe = (imgMeta.name || imgMeta.url || '').toString();
+        const m = probe.match(/(19|20)\d{2}/);
+        const year = m ? m[0] : 'unknown';
+        if (!byYear[year]) byYear[year] = [];
+        byYear[year].push(imgMeta);
       }
-      console.info('Loaded images from list.json');
+
+      renderYearList(byYear);
+      console.info('Prepared year groups from list.json');
     } catch (err) {
       console.warn('Could not load images/list.json:', err);
     }
+  }
+
+  // Render a list of years with counts and buttons to load each year on demand
+  function renderYearList(byYear) {
+    const yearList = document.getElementById('yearList');
+    if (!yearList) return;
+    yearList.innerHTML = '';
+
+    const years = Object.keys(byYear).sort((a, b) => (a === 'unknown' ? 1 : b === 'unknown' ? -1 : b - a));
+
+    const controls = document.createElement('div');
+    controls.className = 'd-flex gap-2 mb-3';
+    const loadAllBtn = document.createElement('button');
+    loadAllBtn.className = 'btn btn-outline-primary';
+    loadAllBtn.textContent = 'Load All Years';
+    loadAllBtn.addEventListener('click', () => {
+      loadAllYears(byYear, loadAllBtn);
+    });
+    controls.appendChild(loadAllBtn);
+    yearList.appendChild(controls);
+
+    const wrap = document.createElement('div');
+    wrap.className = 'row g-3';
+
+    years.forEach((year) => {
+      const col = document.createElement('div');
+      col.className = 'col-md-4';
+      const card = document.createElement('div');
+      card.className = 'card year-card p-3 h-100';
+      card.dataset.year = year;
+
+      const title = document.createElement('div');
+      title.className = 'd-flex justify-content-between align-items-center mb-2';
+      title.innerHTML = `<strong>${year}</strong><small class="text-muted">${byYear[year].length} photos</small>`;
+
+      const btnRow = document.createElement('div');
+      btnRow.className = 'd-flex gap-2';
+      const loadBtn = document.createElement('button');
+      loadBtn.className = 'btn btn-primary btn-sm';
+      loadBtn.textContent = 'Load year';
+      loadBtn.addEventListener('click', async () => {
+        loadBtn.disabled = true;
+        loadBtn.textContent = 'Loading...';
+        await loadYear(year, byYear[year]);
+        loadBtn.textContent = 'Loaded';
+      });
+
+      const previewBtn = document.createElement('button');
+      previewBtn.className = 'btn btn-outline-secondary btn-sm';
+      previewBtn.textContent = 'Preview names';
+      previewBtn.addEventListener('click', () => {
+        alert(`First 10 photos:\n` + byYear[year].slice(0, 10).map(i => i.name || i.url).join('\n'));
+      });
+
+      btnRow.appendChild(loadBtn);
+      btnRow.appendChild(previewBtn);
+
+      card.appendChild(title);
+      card.appendChild(btnRow);
+      col.appendChild(card);
+      wrap.appendChild(col);
+    });
+
+    yearList.appendChild(wrap);
+  }
+
+  // Load a single year's images sequentially
+  async function loadYear(year, list) {
+    for (const meta of list) {
+      try {
+        await addServerImage(meta);
+      } catch (e) {
+        console.warn('Failed to load image for year', year, meta, e);
+      }
+    }
+  }
+
+  // Load all years (careful: may fetch many images)
+  async function loadAllYears(byYear, triggerBtn) {
+    triggerBtn.disabled = true;
+    triggerBtn.textContent = 'Loading all...';
+    const years = Object.keys(byYear).sort((a, b) => (a === 'unknown' ? 1 : b === 'unknown' ? -1 : b - a));
+    for (const y of years) {
+      // sequentially load per-year to avoid too many concurrent requests
+      await loadYear(y, byYear[y]);
+    }
+    triggerBtn.textContent = 'All loaded';
   }
 
   // Add a server-hosted image to gallery by fetching it and converting to data URL
