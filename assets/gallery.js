@@ -139,21 +139,59 @@
         return;
       }
 
-      // Group images by year (try to extract a 4-digit year from name or url)
-      const byYear = {};
-      for (const imgMeta of data) {
-        const probe = (imgMeta.name || imgMeta.url || '').toString();
-        const m = probe.match(/(19|20)\d{2}/);
-        const year = m ? m[0] : 'unknown';
-        if (!byYear[year]) byYear[year] = [];
-        byYear[year].push(imgMeta);
-      }
+      // Flatten to a list of server image URLs (preserve order)
+      const serverList = data.map(item => (typeof item === 'string' ? { url: item, name: item } : { url: item.url || item.path || item.name, name: item.name || item.url } ) ).filter(i => i.url);
 
-      renderYearList(byYear);
-      console.info('Prepared year groups from list.json');
+      // Save to window-scoped variable for batch loading
+      window._alc_server_images = serverList;
+      renderBatchControls(serverList.length);
+      // Pre-load first batch
+      await loadNextBatch();
+      console.info('Prepared batch loading from list.json');
     } catch (err) {
       console.warn('Could not load images/list.json:', err);
     }
+  }
+
+  // Batch-loading state
+  const BATCH_SIZE = 25;
+  let batchIndex = 0; // how many items have been loaded already
+
+  function renderBatchControls(total) {
+    const container = document.getElementById('batchControls');
+    if (!container) return;
+    container.innerHTML = '';
+    const info = document.createElement('div');
+    info.className = 'd-flex justify-content-between align-items-center mb-2';
+    info.innerHTML = `<div><strong>${total}</strong> server photos available</div>`;
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-outline-primary';
+    btn.id = 'loadMoreBtn';
+    btn.textContent = 'Load more';
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      btn.textContent = 'Loading...';
+      await loadNextBatch();
+      btn.disabled = false;
+      btn.textContent = batchIndex >= total ? 'All loaded' : 'Load more';
+    });
+    container.appendChild(info);
+    container.appendChild(btn);
+  }
+
+  // Load the next batch of server images (BATCH_SIZE)
+  async function loadNextBatch() {
+    const list = window._alc_server_images || [];
+    if (!list.length) return;
+    const start = batchIndex;
+    const end = Math.min(list.length, batchIndex + BATCH_SIZE);
+    for (let i = start; i < end; i++) {
+      await addServerImage(list[i]);
+    }
+    batchIndex = end;
+    // update button label
+    const btn = document.getElementById('loadMoreBtn');
+    if (btn) btn.textContent = batchIndex >= list.length ? 'All loaded' : 'Load more';
   }
 
   // Render a list of years with counts and buttons to load each year on demand

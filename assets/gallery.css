@@ -94,3 +94,19 @@
 .year-card .btn {
   font-size: 0.85rem;
 }
+
+/* Batch controls (load 25 at a time) */
+#batchControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+#batchControls .btn {
+  min-width: 140px;
+}
+
+#loadMoreBtn[disabled] {
+  opacity: 0.7;
+}
