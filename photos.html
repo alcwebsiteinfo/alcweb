@@ -245,15 +245,34 @@
      * - When hosted on GitHub Pages, keep the paths relative (e.g. "images/photo.jpg").
      ***********************************************/
 
-    // === MANUAL IMAGE LIST ===
-    // Add or remove image paths here.
-    // Example: 'images/photo1.jpg', 'images/2026-01-14-group.png'
-    const images = [
-      // <- replace these with your actual image filenames
+    // === IMAGE LIST (prefer server-provided `images/list.json`) ===
+    // If `images/list.json` exists it should be an array of objects with
+    // { url: 'images/..', name: '...' } or a simple array of string paths.
+    // We try the JSON first, falling back to the manual list below.
+    let images = [];
+
+    // Manual fallback (edit only if you don't use images/list.json)
+    const manualImages = [
       'images/photo1.jpg',
       'images/photo2.jpg',
       'images/photo3.jpg'
     ];
+
+    async function loadImagesList() {
+      try {
+        const resp = await fetch('images/list.json', { cache: 'no-cache' });
+        if (!resp.ok) throw new Error('no list.json');
+        const data = await resp.json();
+        if (Array.isArray(data)) {
+          // support array of strings or array of objects with `url`
+          images = data.map(item => (typeof item === 'string' ? item : (item.url || item.path || item.name)) ).filter(Boolean);
+          return;
+        }
+      } catch (e) {
+        // ignore and fall back to manual list
+      }
+      images = manualImages.slice();
+    }
 
     // === App state ===
     const galleryEl = document.getElementById('gallery');
@@ -385,8 +404,11 @@
       render();
     });
 
-    // initial render
-    render();
+    // initial render (attempt to load images list first)
+    (async () => {
+      await loadImagesList();
+      render();
+    })();
 
     /************************************************************************
      * Optional: "Download All" feature (creates a zip in the browser)
