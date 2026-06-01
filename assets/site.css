@@ -1,0 +1,124 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 16px;
+  background: #f4f6fb;
+  color: #0f172a;
+  --bs-body-bg: #f4f6fb;
+  --bs-body-color: #0f172a;
+  --surface: #ffffff;
+  --surface-soft: #f8f9fc;
+  --surface-strong: #f0f4ff;
+  --border: rgba(15, 23, 42, 0.08);
+  --primary: #0d6efd;
+  --muted: #6c757d;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--bs-body-bg);
+  color: var(--bs-body-color);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.navbar {
+  background: var(--surface);
+}
+
+.navbar-brand {
+  letter-spacing: 0.04em;
+}
+
+.navbar .nav-link {
+  color: var(--muted);
+}
+
+.navbar .nav-link.active,
+.navbar .nav-link:hover {
+  color: var(--primary);
+}
+
+.hero {
+  padding: 5.5rem 0 4rem;
+}
+
+.hero .headline {
+  max-width: 44rem;
+}
+
+.feature-card {
+  border: 1px solid var(--border);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+}
+
+.section-title {
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.card-hero {
+  border: 0;
+  border-radius: 1.25rem;
+  overflow: hidden;
+}
+
+.card-hero img {
+  object-fit: cover;
+  aspect-ratio: 4 / 3;
+  width: 100%;
+}
+
+.footer {
+  padding: 3rem 0;
+  color: var(--muted);
+}
+
+.footer a {
+  color: var(--muted);
+}
+
+.footer a:hover {
+  color: var(--primary);
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(13, 110, 253, 0.08);
+  color: var(--primary);
+  border-radius: 999px;
+  padding: 0.55rem 0.9rem;
+  font-weight: 600;
+}
+
+.page-intro {
+  color: var(--muted);
+}
+
+.card-transparent {
+  background: rgba(255,255,255,0.9);
+  border: 1px solid rgba(15, 23, 42, 0.05);
+}
+
+@media (max-width: 767.98px) {
+  .hero {
+    padding-top: 3.5rem;
+  }
+}
