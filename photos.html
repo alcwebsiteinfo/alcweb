@@ -199,6 +199,7 @@
       <div class="controls">
         <!-- If you want "Download All" functionality, see the comment in the JS for enabling JSZip -->
         <button id="refresh" class="btn-ghost" title="Reload list">Refresh</button>
+        <button id="loadMorePhotos" class="btn-ghost" title="Load more photos">Load more</button>
         <a id="downloadAll" class="primary" href="#" style="display:none;">Download Selected</a>
       </div>
     </header>
@@ -246,12 +247,8 @@
      ***********************************************/
 
     // === IMAGE LIST (prefer server-provided `images/list.json`) ===
-    // If `images/list.json` exists it should be an array of objects with
-    // { url: 'images/..', name: '...' } or a simple array of string paths.
-    // We try the JSON first, falling back to the manual list below.
+    // We try the JSON first, falling back to a small manual list.
     let images = [];
-
-    // Manual fallback (edit only if you don't use images/list.json)
     const manualImages = [
       'images/photo1.jpg',
       'images/photo2.jpg',
@@ -264,12 +261,11 @@
         if (!resp.ok) throw new Error('no list.json');
         const data = await resp.json();
         if (Array.isArray(data)) {
-          // support array of strings or array of objects with `url`
           images = data.map(item => (typeof item === 'string' ? item : (item.url || item.path || item.name)) ).filter(Boolean);
           return;
         }
       } catch (e) {
-        // ignore and fall back to manual list
+        // fall back
       }
       images = manualImages.slice();
     }
@@ -288,6 +284,8 @@
 
     let currentIndex = -1;
     let renderedList = [];
+    const BATCH_SIZE = 25;
+    let batchIndex = 0; // how many images are currently shown
 
     function filenameFromPath(path){
       return path.split('/').pop();
@@ -332,7 +330,7 @@
 
     function render(){
       galleryEl.innerHTML = '';
-      renderedList = images.filter(Boolean);
+      renderedList = images.filter(Boolean).slice(0, batchIndex);
       if(!renderedList.length){
         emptyEl.style.display = '';
         galleryEl.style.display = 'none';
@@ -346,6 +344,19 @@
         const c = createCard(src, i);
         galleryEl.appendChild(c);
       });
+    }
+
+    async function loadNextBatch(){
+      if(batchIndex >= images.length) return;
+      const start = batchIndex;
+      batchIndex = Math.min(images.length, batchIndex + BATCH_SIZE);
+      render();
+      // update load more button
+      const loadBtn = document.getElementById('loadMorePhotos');
+      if(loadBtn){
+        loadBtn.textContent = batchIndex >= images.length ? 'All loaded' : 'Load more';
+        loadBtn.disabled = batchIndex >= images.length;
+      }
     }
 
     function openModal(i){
@@ -398,16 +409,26 @@
       if(e.target === modal) closeModal(); // click on backdrop closes
     });
 
-    refreshBtn.addEventListener('click', ()=>{
-      // If you implement server-side listing, call fetch here.
-      // For now, manual refresh just re-renders the current images array.
-      render();
+    refreshBtn.addEventListener('click', async ()=>{
+      await loadImagesList();
+      batchIndex = 0;
+      await loadNextBatch();
     });
 
-    // initial render (attempt to load images list first)
+    // wire load more button
+    document.getElementById('loadMorePhotos').addEventListener('click', async (e) => {
+      const btn = e.currentTarget;
+      btn.disabled = true;
+      btn.textContent = 'Loading...';
+      await loadNextBatch();
+      btn.disabled = batchIndex >= images.length;
+    });
+
+    // initial render (attempt to load images list first, then load first batch)
     (async () => {
       await loadImagesList();
-      render();
+      batchIndex = 0;
+      await loadNextBatch();
     })();
 
     /************************************************************************
