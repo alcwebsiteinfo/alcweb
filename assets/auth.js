@@ -2,31 +2,39 @@ const ALC_AUTH_KEY = 'alcwebMember';
 const ALC_MEMBERS = [
   {
     username: '12369',
-    displayName: 'Member 12369',
-    role: 'ALC Member',
-    photo: 'images/image.png',
-    bio: 'Active ALC member with access to community stories, events, and shared resources.'
+    displayName: 'Raihan',
+    role: 'IT Department President',
+    photo: 'images/raihan.jpg',
+    bio: 'President of the ALC IT department, leading technical operations, member systems, and community technology strategy.',
+    class: '2nd',
+    status: 'level 0'
   },
   {
     username: '12399',
-    displayName: 'Member 12399',
-    role: 'New ALC Member',
+    displayName: 'Rabiya Alam',
+    role: 'IT Department President',
     photo: 'WhatsApp Image 2026-06-05 at 12.18.44 AM.jpeg',
-    bio: 'The latest member profile, using the new uploaded image for the ALC community page.'
+    bio: 'President of the ALC IT department, driving technology strategy and member systems for the community.',
+    class: '',
+    status: ''
   },
   {
     username: 'samiya',
     displayName: 'Samiya',
     role: 'Creative Storyteller',
     photo: 'images/samiya.jpg.jpg',
-    bio: 'A talented member with a passion for creative collaboration and storytelling.'
+    bio: 'A talented member with a passion for creative collaboration and storytelling.',
+    class: '',
+    status: ''
   },
   {
     username: 'hridda',
     displayName: 'Hridda',
     role: 'Community Builder',
     photo: 'images/hridda.jpg',
-    bio: 'Driven by ideas, Hridda helps shape how ALC shares events, images, and community moments.'
+    bio: 'Driven by ideas, Hridda helps shape how ALC shares events, images, and community moments.',
+    class: '',
+    status: ''
   },
   {
     username: 'raihan',

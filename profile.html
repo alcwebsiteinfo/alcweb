@@ -83,11 +83,12 @@
       const isOwnProfile = currentMember && currentMember.username === selectedMember.username;
       title.textContent = isOwnProfile ? `Welcome, ${selectedMember.displayName}` : `${selectedMember.displayName}`;
       subtitle.textContent = isOwnProfile ? 'This is your personal ALC profile.' : 'Viewing a member profile.';
+      const profilePhoto = selectedMember.photo || 'images/image.png';
 
       content.innerHTML = `
         <div class="col-lg-4">
           <div class="card h-100 shadow-sm">
-            <img src="${selectedMember.photo}" class="card-img-top" alt="${selectedMember.displayName}">
+            <img src="${profilePhoto}" class="card-img-top" alt="${selectedMember.displayName}">
             <div class="card-body">
               <h2 class="h4 fw-bold mb-2">${selectedMember.displayName}</h2>
               <p class="text-muted mb-0">${selectedMember.role}</p>
@@ -99,8 +100,12 @@
             <h3 class="h5">About this member</h3>
             <p class="text-muted mb-4">${selectedMember.bio}</p>
             <dl class="row">
-              <dt class="col-sm-3">Member ID</dt>
-              <dd class="col-sm-9">${selectedMember.username}</dd>
+              <dt class="col-sm-3">Name</dt>
+              <dd class="col-sm-9">${selectedMember.displayName}</dd>
+              <dt class="col-sm-3">Class</dt>
+              <dd class="col-sm-9">${selectedMember.class || 'Not specified'}</dd>
+              <dt class="col-sm-3">Status</dt>
+              <dd class="col-sm-9">${selectedMember.status || 'Not specified'}</dd>
               <dt class="col-sm-3">Profile access</dt>
               <dd class="col-sm-9">${isOwnProfile ? 'Your own member profile' : 'Shared member details'}</dd>
             </dl>
