@@ -30,9 +30,9 @@ const ALC_MEMBERS = [
   {
     username: 'hridda',
     displayName: 'Hridda',
-    role: 'Community Builder',
+    role: 'Vice President, IT Dept. and President, Arts & Crafts Club',
     photo: 'images/hridda.jpg',
-    bio: 'Driven by ideas, Hridda helps shape how ALC shares events, images, and community moments.',
+    bio: 'Vice president of ALC IT and president of the Arts & Crafts club, Hridda also captures community moments as the team photographer.',
     class: '',
     status: ''
   },
