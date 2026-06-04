@@ -55,8 +55,18 @@ function clearAuth() {
   localStorage.removeItem(ALC_AUTH_KEY);
 }
 
-function findMember(username) {
-  return ALC_MEMBERS.find((member) => member.username === username) || null;
+function findMember(identifier) {
+  if (!identifier) return null;
+  const q = String(identifier).trim();
+  // exact username match
+  let member = ALC_MEMBERS.find((m) => m.username === q);
+  if (member) return member;
+  // exact displayName match (case-insensitive)
+  member = ALC_MEMBERS.find((m) => m.displayName && m.displayName.toLowerCase() === q.toLowerCase());
+  if (member) return member;
+  // partial displayName match (e.g., first name)
+  member = ALC_MEMBERS.find((m) => m.displayName && m.displayName.toLowerCase().includes(q.toLowerCase()));
+  return member || null;
 }
 
 function getCurrentMember() {
@@ -74,6 +84,12 @@ function redirectToLogin() {
 function requireAuth() {
   const currentPage = window.location.pathname.replace(/^.*\//, '');
   if (currentPage === LOGIN_PAGE) return;
+  // allow viewing a public profile by visiting profile.html?user=<username>
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (currentPage === 'profile.html' && urlParams.get('user')) return;
+  } catch (e) {}
+
   if (!isAuthenticated()) {
     redirectToLogin();
   }
@@ -84,6 +100,12 @@ function requireAuth() {
   try {
     const currentPage = (typeof window !== 'undefined') ? window.location.pathname.replace(/^.*\//, '') : '';
     if (currentPage && currentPage !== LOGIN_PAGE) {
+      // allow public profile view via ?user
+      try {
+        const urlParams = (typeof window !== 'undefined') ? new URLSearchParams(window.location.search) : new URLSearchParams();
+        if (currentPage === 'profile.html' && urlParams.get('user')) return;
+      } catch (e) {}
+
       if (!isAuthenticated()) {
         redirectToLogin();
       }
