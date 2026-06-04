@@ -98,7 +98,7 @@
         <div class="col-lg-8">
           <div class="card h-100 shadow-sm p-4">
             <h3 class="h5">About this member</h3>
-            <p class="text-muted mb-4">${selectedMember.bio}</p>
+            <p class="text-muted mb-4">${selectedMember.bio || 'Profile details are not available yet. Check back later for a full bio.'}</p>
             <dl class="row">
               <dt class="col-sm-3">Name</dt>
               <dd class="col-sm-9">${selectedMember.displayName}</dd>
