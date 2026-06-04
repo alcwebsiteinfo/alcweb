@@ -41,6 +41,20 @@ function requireAuth() {
   }
 }
 
+// Immediate protection: run as soon as the script is parsed to avoid a visible bypass
+;(function immediateCheck() {
+  try {
+    const currentPage = (typeof window !== 'undefined') ? window.location.pathname.replace(/^.*\//, '') : '';
+    if (currentPage && currentPage !== LOGIN_PAGE) {
+      if (!isAuthenticated()) {
+        redirectToLogin();
+      }
+    }
+  } catch (e) {
+    // silent fallback
+  }
+})();
+
 function updateAuthLink() {
   const authLink = document.getElementById('authLink');
   if (!authLink) return;
