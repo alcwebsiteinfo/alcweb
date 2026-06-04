@@ -109,10 +109,19 @@
               <dt class="col-sm-3">Profile access</dt>
               <dd class="col-sm-9">${isOwnProfile ? 'Your own member profile' : 'Shared member details'}</dd>
             </dl>
-            ${isOwnProfile ? '<a href="about.html" class="btn btn-primary mt-3">Visit team page</a>' : ''}
+            ${isOwnProfile ? '<a href="about.html" class="btn btn-primary mt-3 me-2">Visit team page</a><button id="logoutBtn" class="btn btn-outline-danger mt-3">Log out</button>' : ''}
           </div>
         </div>
       `;
+      // attach logout handler when viewing your own profile
+      if (isOwnProfile) {
+        const logoutBtn = document.getElementById('logoutBtn');
+        logoutBtn?.addEventListener('click', (e) => {
+          e.preventDefault();
+          clearAuth();
+          window.location.href = 'login.html';
+        });
+      }
     });
   </script>
 </body>
