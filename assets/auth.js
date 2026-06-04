@@ -21,9 +21,9 @@ const ALC_MEMBERS = [
   {
     username: 'samiya',
     displayName: 'Samiya',
-    role: 'Creative Storyteller',
+    role: 'Head Chef',
     photo: 'images/samiya.jpg.jpg',
-    bio: 'A talented member with a passion for creative collaboration and storytelling.',
+    bio: 'Head chef for ALC community events, crafting menus and coordinating culinary experiences.',
     class: '',
     status: ''
   },
