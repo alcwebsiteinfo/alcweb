@@ -1,9 +1,40 @@
 const ALC_AUTH_KEY = 'alcwebMember';
 const ALC_MEMBERS = [
-  { username: '12369' },
-  { username: '12399' },
-  { username: 'samiya' },
-  { username: 'hridda' }
+  {
+    username: '12369',
+    displayName: 'Member 12369',
+    role: 'ALC Member',
+    photo: 'images/image.png',
+    bio: 'Active ALC member with access to community stories, events, and shared resources.'
+  },
+  {
+    username: '12399',
+    displayName: 'Member 12399',
+    role: 'New ALC Member',
+    photo: 'WhatsApp Image 2026-06-05 at 12.18.44 AM.jpeg',
+    bio: 'The latest member profile, using the new uploaded image for the ALC community page.'
+  },
+  {
+    username: 'samiya',
+    displayName: 'Samiya',
+    role: 'Creative Storyteller',
+    photo: 'images/samiya.jpg.jpg',
+    bio: 'A talented member with a passion for creative collaboration and storytelling.'
+  },
+  {
+    username: 'hridda',
+    displayName: 'Hridda',
+    role: 'Community Builder',
+    photo: 'images/hridda.jpg',
+    bio: 'Driven by ideas, Hridda helps shape how ALC shares events, images, and community moments.'
+  },
+  {
+    username: 'raihan',
+    displayName: 'Raihan',
+    role: 'IT Department President',
+    photo: 'images/raihan.jpg',
+    bio: 'President of the ALC IT department, leading technical operations, member systems, and community technology strategy.'
+  }
 ];
 const LOGIN_PAGE = 'login.html';
 
@@ -24,7 +55,12 @@ function clearAuth() {
 }
 
 function findMember(username) {
-  return ALC_MEMBERS.some((member) => member.username === username);
+  return ALC_MEMBERS.find((member) => member.username === username) || null;
+}
+
+function getCurrentMember() {
+  const username = getSavedMember();
+  return username ? findMember(username) : null;
 }
 
 function redirectToLogin() {
@@ -97,10 +133,11 @@ function handleLoginForm(event) {
     return;
   }
 
-  if (findMember(username)) {
+  const member = findMember(username);
+  if (member) {
     saveMember(username);
     const urlParams = new URLSearchParams(window.location.search);
-    const redirect = urlParams.get('redirect') || 'index.html';
+    const redirect = urlParams.get('redirect') || 'profile.html';
     window.location.href = redirect;
     return;
   }

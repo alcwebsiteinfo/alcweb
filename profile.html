@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Personal profile page for ALC members. View member details, role, and photo after logging in.">
+  <title>ALC Member Profile</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link href="assets/site.css" rel="stylesheet">
+  <script src="assets/auth.js"></script>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-uppercase" href="index.html">ALC Website</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="about.html">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="gallery.html">Gallery</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="photos.html">Photos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="credits.html">Credits</a>
+          </li>
+          <li class="nav-item">
+            <a id="authLink" class="nav-link" href="login.html">Log in</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-5">
+    <div class="row mb-4">
+      <div class="col-12">
+        <p class="section-title">Member Profile</p>
+        <h1 id="profileTitle" class="fw-bold">Loading profile...</h1>
+        <p id="profileSubtitle" class="text-muted">Welcome to your ALC member dashboard.</p>
+      </div>
+    </div>
+
+    <div id="profileContent" class="row g-4"></div>
+  </main>
+
+  <footer class="footer border-top">
+    <div class="container text-center text-muted">
+      <p class="mb-1">ALC Website — keep your profile up to date and share your member story.</p>
+      <small>Use this page to review member details and access personalized content.</small>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const requestedUsername = urlParams.get('user');
+      const currentMember = getCurrentMember();
+      const selectedMember = requestedUsername ? findMember(requestedUsername) : currentMember;
+      const title = document.getElementById('profileTitle');
+      const subtitle = document.getElementById('profileSubtitle');
+      const content = document.getElementById('profileContent');
+
+      if (!selectedMember) {
+        title.textContent = 'Profile not found';
+        subtitle.textContent = 'Please log in with a valid ALC member ID.';
+        content.innerHTML = '<div class="col-12"><div class="alert alert-warning">This profile does not exist or you are not logged in. Use your approved member ID to sign in.</div></div>';
+        return;
+      }
+
+      const isOwnProfile = currentMember && currentMember.username === selectedMember.username;
+      title.textContent = isOwnProfile ? `Welcome, ${selectedMember.displayName}` : `${selectedMember.displayName}`;
+      subtitle.textContent = isOwnProfile ? 'This is your personal ALC profile.' : 'Viewing a member profile.';
+
+      content.innerHTML = `
+        <div class="col-lg-4">
+          <div class="card h-100 shadow-sm">
+            <img src="${selectedMember.photo}" class="card-img-top" alt="${selectedMember.displayName}">
+            <div class="card-body">
+              <h2 class="h4 fw-bold mb-2">${selectedMember.displayName}</h2>
+              <p class="text-muted mb-0">${selectedMember.role}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-8">
+          <div class="card h-100 shadow-sm p-4">
+            <h3 class="h5">About this member</h3>
+            <p class="text-muted mb-4">${selectedMember.bio}</p>
+            <dl class="row">
+              <dt class="col-sm-3">Member ID</dt>
+              <dd class="col-sm-9">${selectedMember.username}</dd>
+              <dt class="col-sm-3">Profile access</dt>
+              <dd class="col-sm-9">${isOwnProfile ? 'Your own member profile' : 'Shared member details'}</dd>
+            </dl>
+            ${isOwnProfile ? '<a href="about.html" class="btn btn-primary mt-3">Visit team page</a>' : ''}
+          </div>
+        </div>
+      `;
+    });
+  </script>
+</body>
+</html>
