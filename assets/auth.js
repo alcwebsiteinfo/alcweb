@@ -96,18 +96,8 @@ function requireAuth() {
 function updateAuthLink() {
   const authLink = document.getElementById('authLink');
   if (!authLink) return;
-  if (isAuthenticated()) {
-    authLink.textContent = 'Log out';
-    authLink.href = '#';
-    authLink.addEventListener('click', (event) => {
-      event.preventDefault();
-      clearAuth();
-      window.location.href = LOGIN_PAGE;
-    });
-  } else {
-    authLink.textContent = 'Log in';
-    authLink.href = LOGIN_PAGE;
-  }
+  authLink.textContent = 'Profile';
+  authLink.href = 'profile.html';
 }
 
 function updateActiveNavLink() {
