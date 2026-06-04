@@ -16,6 +16,8 @@
   --primary-strong: #0b4ecd;
   --muted: #56617a;
   --shadow: 0 24px 80px rgba(15, 23, 42, 0.08);
+  --radius: 1rem;
+  --container-max: 1100px;
 }
 
 * {
@@ -33,6 +35,17 @@ body {
     radial-gradient(circle at bottom right, rgba(37, 99, 235, 0.06), transparent 22%),
     var(--bs-body-bg);
   color: var(--bs-body-color);
+}
+
+/* Improve font smoothing and basic layout rhythm */
+html, body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Constrain central content for better reading width */
+.container {
+  max-width: var(--container-max);
 }
 
 img {
@@ -98,6 +111,22 @@ textarea {
   letter-spacing: -0.04em;
 }
 
+/* Headings */
+h1, h2, h3, h4 {
+  color: #071133;
+  letter-spacing: -0.02em;
+  margin-top: 0.25rem;
+}
+
+h1 {
+  font-size: clamp(1.75rem, 3.2vw, 2.8rem);
+  line-height: 1.05;
+}
+
+h2 {
+  font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+}
+
 .hero p {
   position: relative;
   z-index: 1;
@@ -137,6 +166,41 @@ textarea {
   object-fit: cover;
   aspect-ratio: 4 / 3;
   width: 100%;
+}
+
+/* Buttons: slightly larger, consistent radii and soft shadows */
+.btn {
+  border-radius: 0.9rem;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+.btn:active {
+  transform: translateY(1px);
+}
+
+/* Inputs focus */
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  box-shadow: 0 8px 30px rgba(37,99,235,0.08);
+  border-color: rgba(37,99,235,0.28);
+}
+
+/* Navbar brand polish */
+.navbar-brand {
+  color: var(--primary-strong);
+  font-weight: 800;
+}
+
+/* Footer: subtle separation and consistent padding */
+.footer {
+  padding: 3rem 0;
+  color: var(--muted);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+}
+
+/* Utility: subtle card lift for focusable elements */
+.focus-lift:focus-within, .focus-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
 }
 
 .footer {

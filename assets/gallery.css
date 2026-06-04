@@ -110,3 +110,27 @@
 #loadMoreBtn[disabled] {
   opacity: 0.7;
 }
+
+/* Optional grid alternative for denser layouts */
+#gallery.grid-view {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+/* Image overlay for quick actions */
+.gallery-card .overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(7,17,51,0.28));
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+.gallery-card:hover .overlay {
+  opacity: 1;
+}
+
+/* Slightly larger viewer modal image */
+.modal-body img {
+  max-height: 70vh;
+}
