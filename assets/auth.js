@@ -37,7 +37,7 @@ const ALC_MEMBERS = [
     status: ''
   }
 ];
-const LOGIN_PAGE = 'login.html';
+const LOGIN_PAGE = 'index.html';
 
 function getSavedMember() {
   return localStorage.getItem(ALC_AUTH_KEY);
@@ -76,14 +76,14 @@ function getCurrentMember() {
 
 function redirectToLogin() {
   const target = window.location.pathname.replace(/^.*\//, '') || 'index.html';
-  if (target === LOGIN_PAGE) return;
+  if (target === LOGIN_PAGE || target === 'login.html') return;
   const query = `?redirect=${encodeURIComponent(target)}`;
   window.location.replace(LOGIN_PAGE + query);
 }
 
 function requireAuth() {
   const currentPage = window.location.pathname.replace(/^.*\//, '');
-  if (currentPage === LOGIN_PAGE) return;
+  if (currentPage === LOGIN_PAGE || currentPage === 'login.html') return;
   // allow viewing a public profile by visiting profile.html?user=<username>
   try {
     const urlParams = new URLSearchParams(window.location.search);
@@ -99,7 +99,7 @@ function requireAuth() {
 ;(function immediateCheck() {
   try {
     const currentPage = (typeof window !== 'undefined') ? window.location.pathname.replace(/^.*\//, '') : '';
-    if (currentPage && currentPage !== LOGIN_PAGE) {
+    if (currentPage && currentPage !== LOGIN_PAGE && currentPage !== 'login.html') {
       // allow public profile view via ?user
       try {
         const urlParams = (typeof window !== 'undefined') ? new URLSearchParams(window.location.search) : new URLSearchParams();
@@ -150,7 +150,7 @@ function handleLoginForm(event) {
   if (member) {
     saveMember(username);
     const urlParams = new URLSearchParams(window.location.search);
-    const redirect = urlParams.get('redirect') || 'profile.html';
+    const redirect = urlParams.get('redirect') || 'home.html';
     const redirectTarget = redirect.startsWith('http') ? redirect : new URL(redirect, window.location.href).toString();
     try {
       window.location.assign(redirectTarget);
@@ -167,12 +167,12 @@ function handleLoginForm(event) {
 
 function initializeAuth() {
   const currentPage = window.location.pathname.replace(/^.*\//, '') || 'index.html';
-  if (currentPage !== LOGIN_PAGE) {
+  if (currentPage !== LOGIN_PAGE && currentPage !== 'login.html') {
     requireAuth();
   }
   updateAuthLink();
   updateActiveNavLink();
-  if (currentPage === LOGIN_PAGE) {
+  if (currentPage === LOGIN_PAGE || currentPage === 'login.html') {
     const loginForm = document.getElementById('loginForm');
     loginForm?.addEventListener('submit', handleLoginForm);
   }
