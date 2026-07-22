@@ -151,7 +151,12 @@ function handleLoginForm(event) {
     saveMember(username);
     const urlParams = new URLSearchParams(window.location.search);
     const redirect = urlParams.get('redirect') || 'profile.html';
-    window.location.href = redirect;
+    const redirectTarget = redirect.startsWith('http') ? redirect : new URL(redirect, window.location.href).toString();
+    try {
+      window.location.assign(redirectTarget);
+    } catch (error) {
+      window.location.href = redirectTarget;
+    }
     return;
   }
 
@@ -160,8 +165,8 @@ function handleLoginForm(event) {
   }
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-  const currentPage = window.location.pathname.replace(/^.*\//, '');
+function initializeAuth() {
+  const currentPage = window.location.pathname.replace(/^.*\//, '') || 'index.html';
   if (currentPage !== LOGIN_PAGE) {
     requireAuth();
   }
@@ -171,4 +176,10 @@ window.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
     loginForm?.addEventListener('submit', handleLoginForm);
   }
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeAuth, { once: true });
+} else {
+  initializeAuth();
+}

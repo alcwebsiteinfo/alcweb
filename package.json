@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/alcwebsiteinfo/alcweb#readme",
   "dependencies": {
+    "jsdom": "^29.1.1",
     "playwright": "^1.49.0"
   }
 }
