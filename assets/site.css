@@ -1,0 +1,318 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+  background: #eef3fb;
+  color: #0f172a;
+  --bs-body-bg: #eef3fb;
+  --bs-body-color: #0f172a;
+  --surface: #ffffff;
+  --surface-soft: #f8f9fc;
+  --surface-strong: #f0f4ff;
+  --border: rgba(15, 23, 42, 0.08);
+  --primary: #2563eb;
+  --primary-soft: rgba(37, 99, 235, 0.12);
+  --primary-strong: #0b4ecd;
+  --muted: #56617a;
+  --shadow: 0 24px 80px rgba(15, 23, 42, 0.08);
+  --radius: 1rem;
+  --container-max: 1100px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(37, 99, 235, 0.06), transparent 22%),
+    var(--bs-body-bg);
+  color: var(--bs-body-color);
+}
+
+/* Improve font smoothing and basic layout rhythm */
+html, body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Constrain central content for better reading width */
+.container {
+  max-width: var(--container-max);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: var(--primary);
+}
+
+a:hover {
+  color: var(--primary-strong);
+}
+
+button,
+.btn,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.navbar {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.navbar-brand {
+  letter-spacing: 0.06em;
+}
+
+.navbar .nav-link {
+  color: var(--muted);
+  transition: color 0.16s ease;
+}
+
+.navbar .nav-link.active,
+.navbar .nav-link:hover {
+  color: var(--primary-strong);
+}
+
+.hero {
+  position: relative;
+  padding: 6rem 0 4rem;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.14), transparent 26%),
+    radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.08), transparent 22%);
+  pointer-events: none;
+}
+
+.hero .headline {
+  position: relative;
+  z-index: 1;
+  max-width: 42rem;
+  letter-spacing: -0.04em;
+}
+
+/* Headings */
+h1, h2, h3, h4 {
+  color: #071133;
+  letter-spacing: -0.02em;
+  margin-top: 0.25rem;
+}
+
+h1 {
+  font-size: clamp(1.75rem, 3.2vw, 2.8rem);
+  line-height: 1.05;
+}
+
+h2 {
+  font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+}
+
+.hero p {
+  position: relative;
+  z-index: 1;
+  color: var(--muted);
+}
+
+.feature-card {
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 1.15rem;
+  background: rgba(255, 255, 255, 0.96);
+  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow);
+  border-color: rgba(37, 99, 235, 0.18);
+}
+
+.section-title {
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 0.85rem;
+}
+
+.card-hero {
+  border: 0;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.08);
+}
+
+.card-hero img {
+  object-fit: cover;
+  aspect-ratio: 4 / 3;
+  width: 100%;
+}
+
+/* Buttons: slightly larger, consistent radii and soft shadows */
+.btn {
+  border-radius: 0.9rem;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+.btn:active {
+  transform: translateY(1px);
+}
+
+/* Inputs focus */
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  box-shadow: 0 8px 30px rgba(37,99,235,0.08);
+  border-color: rgba(37,99,235,0.28);
+}
+
+/* Navbar brand polish */
+.navbar-brand {
+  color: var(--primary-strong);
+  font-weight: 800;
+}
+
+/* Footer: subtle separation and consistent padding */
+.footer {
+  padding: 3rem 0;
+  color: var(--muted);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+}
+
+/* Utility: subtle card lift for focusable elements */
+.focus-lift:focus-within, .focus-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+}
+
+.footer {
+  padding: 3rem 0;
+  color: var(--muted);
+}
+
+.footer a {
+  color: var(--muted);
+}
+
+.footer a:hover {
+  color: var(--primary);
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--primary-soft);
+  color: var(--primary-strong);
+  border-radius: 999px;
+  padding: 0.55rem 0.95rem;
+  font-weight: 700;
+}
+
+.page-intro {
+  color: var(--muted);
+}
+
+.card-transparent {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.15), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(134, 239, 172, 0.12), transparent 28%),
+    #eef3fb;
+}
+
+.login-card {
+  max-width: 460px;
+  width: 100%;
+  border: none;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: var(--shadow);
+}
+
+.login-card .card-body {
+  padding: 2.5rem;
+}
+
+.login-card .card-body h1 {
+  margin-bottom: 0.5rem;
+}
+
+.login-card .form-control {
+  border-radius: 0.85rem;
+}
+
+.login-card .btn {
+  min-height: 3.4rem;
+  font-weight: 600;
+}
+
+.login-card hr {
+  border-top-color: rgba(15, 23, 42, 0.08);
+}
+
+.btn-outline-primary {
+  color: var(--primary-strong);
+  border-color: rgba(37, 99, 235, 0.24);
+}
+
+.btn-outline-primary:hover {
+  background: rgba(37, 99, 235, 0.06);
+  border-color: rgba(37, 99, 235, 0.38);
+}
+
+.login-card h1 {
+  letter-spacing: -0.04em;
+}
+
+.login-card .form-label {
+  font-weight: 600;
+}
+
+.login-card small {
+  color: var(--muted);
+}
+
+.login-card .btn-primary {
+  box-shadow: 0 14px 30px rgba(37, 99, 235, 0.15);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-strong);
+}
+
+@media (max-width: 767.98px) {
+  .hero {
+    padding-top: 4rem;
+  }
+  .hero .headline {
+    font-size: 2.5rem;
+  }
+}

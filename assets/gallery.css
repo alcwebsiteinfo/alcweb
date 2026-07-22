@@ -1,0 +1,136 @@
+/* Basic gallery styles */
+#dropArea {
+  background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(246,249,255,0.95));
+  border: 1px dashed rgba(37, 99, 235, 0.35);
+  border-radius: 1rem;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+  color: #56708a;
+}
+#dropArea:hover {
+  transform: translateY(-1px);
+}
+#dropArea.dragover {
+  background: linear-gradient(180deg, rgba(37,99,235,0.08), rgba(37,99,235,0.03));
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.gallery-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(255,255,255,0.98);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+.gallery-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+}
+
+.gallery-thumb {
+  width: 100%;
+  height: 14rem;
+  object-fit: cover;
+  display: block;
+}
+
+/* overlay action buttons */
+.gallery-actions {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  display: flex;
+  gap: 8px;
+}
+
+.gallery-actions .btn {
+  backdrop-filter: blur(10px);
+  background: rgba(255,255,255,0.88);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  color: #0f172a;
+  opacity: 0.96;
+}
+
+.gallery-actions .btn:hover {
+  opacity: 1;
+}
+
+/* small caption area */
+.gallery-caption {
+  padding: 0.75rem 0.85rem;
+  font-size: 0.92rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  color: #293241;
+}
+
+.gallery-caption .text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 767.98px) {
+  .gallery-thumb {
+    height: 12rem;
+  }
+}
+
+/* Year list styles */
+.year-card {
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  border-radius: 0.85rem;
+  background: rgba(255,255,255,0.98);
+  box-shadow: 0 8px 30px rgba(15,23,42,0.04);
+}
+
+.year-card strong {
+  font-size: 1.05rem;
+}
+
+.year-card .btn {
+  font-size: 0.85rem;
+}
+
+/* Batch controls (load 25 at a time) */
+#batchControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+#batchControls .btn {
+  min-width: 140px;
+}
+
+#loadMoreBtn[disabled] {
+  opacity: 0.7;
+}
+
+/* Optional grid alternative for denser layouts */
+#gallery.grid-view {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+/* Image overlay for quick actions */
+.gallery-card .overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(7,17,51,0.28));
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+.gallery-card:hover .overlay {
+  opacity: 1;
+}
+
+/* Slightly larger viewer modal image */
+.modal-body img {
+  max-height: 70vh;
+}
