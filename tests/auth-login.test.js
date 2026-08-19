@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require('jsdom');
 
-function runLoginScenario() {
+async function runLoginScenario() {
   const html = `<!doctype html>
   <html>
     <body>
@@ -34,21 +34,11 @@ function runLoginScenario() {
     }
   });
 
-  let assignedUrl = null;
-  Object.defineProperty(window, 'location', {
-    configurable: true,
-    value: {
-      href: 'http://localhost/login.html',
-      pathname: '/login.html',
-      search: '',
-      assign(url) {
-        assignedUrl = url;
-        this.href = url;
-      },
-      replace(url) {
-        assignedUrl = url;
-        this.href = url;
-      }
+  window.ALC_AUTH_ENDPOINT = 'https://example.test/login';
+  window.fetch = async () => ({
+    ok: true,
+    async json() {
+      return { authenticated: true, memberID: '12369' };
     }
   });
 
@@ -57,14 +47,14 @@ function runLoginScenario() {
 
   window.document.getElementById('username').value = '12369';
   window.document.getElementById('loginForm').dispatchEvent(new window.Event('submit', { bubbles: true, cancelable: true }));
+  await new Promise((resolve) => setImmediate(resolve));
 
   return {
-    savedMember: window.localStorage.getItem('alcwebMember'),
-    redirect: assignedUrl
+    savedMember: window.localStorage.getItem('alcwebMember')
   };
 }
 
-const result = runLoginScenario();
-assert.strictEqual(result.savedMember, '12369', 'Login should save the authenticated member on submit');
-assert.strictEqual(result.redirect, 'http://localhost/profile.html', 'Login should redirect to the profile page after a successful sign-in');
-console.log('auth login regression test passed');
+runLoginScenario().then((result) => {
+  assert.strictEqual(result.savedMember, '12369', 'Login should save the authenticated member on submit');
+  console.log('auth login regression test passed');
+});

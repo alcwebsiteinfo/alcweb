@@ -1,4 +1,5 @@
 const ALC_AUTH_KEY = 'alcwebMember';
+const ALC_AUTH_ENDPOINT = window.ALC_AUTH_ENDPOINT || '';
 const ALC_MEMBERS = [
   {
     username: '12369',
@@ -136,32 +137,52 @@ function updateActiveNavLink() {
   });
 }
 
-function handleLoginForm(event) {
+async function verifyMember(identifier) {
+  if (!ALC_AUTH_ENDPOINT) {
+    throw new Error('Login service is not configured.');
+  }
+
+  const response = await fetch(`${ALC_AUTH_ENDPOINT}?memberID=${encodeURIComponent(identifier)}`);
+  if (!response.ok) throw new Error('Login service request failed.');
+
+  const result = await response.json();
+  return result.authenticated === true && result.memberID === identifier;
+}
+
+async function handleLoginForm(event) {
   event.preventDefault();
   const username = document.getElementById('username')?.value?.trim();
   const feedback = document.getElementById('loginFeedback');
+  const submitButton = event.target.querySelector('button[type="submit"]');
 
   if (!username) {
     if (feedback) feedback.textContent = 'Please enter your member ID.';
     return;
   }
 
-  const member = findMember(username);
-  if (member) {
-    saveMember(username);
-    const urlParams = new URLSearchParams(window.location.search);
-    const redirect = urlParams.get('redirect') || 'home.html';
-    const redirectTarget = redirect.startsWith('http') ? redirect : new URL(redirect, window.location.href).toString();
-    try {
-      window.location.assign(redirectTarget);
-    } catch (error) {
-      window.location.href = redirectTarget;
-    }
-    return;
-  }
+  if (submitButton) submitButton.disabled = true;
+  if (feedback) feedback.textContent = '';
 
-  if (feedback) {
-    feedback.textContent = 'Invalid member ID. Please try again.';
+  try {
+    const isApproved = await verifyMember(username);
+    if (isApproved) {
+      saveMember(username);
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirect = urlParams.get('redirect') || 'home.html';
+      const redirectTarget = redirect.startsWith('http') ? redirect : new URL(redirect, window.location.href).toString();
+      try {
+        window.location.assign(redirectTarget);
+      } catch (error) {
+        window.location.href = redirectTarget;
+      }
+      return;
+    }
+
+    if (feedback) feedback.textContent = 'Invalid member ID. Please try again.';
+  } catch (error) {
+    if (feedback) feedback.textContent = error.message;
+  } finally {
+    if (submitButton) submitButton.disabled = false;
   }
 }
 
