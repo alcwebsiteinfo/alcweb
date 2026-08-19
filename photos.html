@@ -229,6 +229,26 @@
       background: rgba(255, 255, 255, 0.55);
     }
 
+    .photos-page .person-section {
+      margin-bottom: 2.5rem;
+    }
+
+    .photos-page .person-heading {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      margin-bottom: 0.85rem;
+      font-family: Fraunces, Georgia, serif;
+      color: #17221d;
+    }
+
+    .photos-page .person-heading small {
+      font-family: "DM Sans", system-ui, sans-serif;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
     @media (max-width: 520px) {
       .photos-page .photo-app {
         margin-top: 1.5rem;
@@ -326,7 +346,11 @@
         if (!resp.ok) throw new Error('no list.json');
         const data = await resp.json();
         if (Array.isArray(data)) {
-          images = data.map(item => (typeof item === 'string' ? item : (item.url || item.path || item.name)) ).filter(Boolean);
+          images = data.map(item => {
+            if (typeof item === 'string') return { url: item, name: item, person: 'ALC Members' };
+            const url = item.url || item.path || item.name;
+            return url ? { url, name: item.name || url, person: item.person || 'ALC Members' } : null;
+          }).filter(Boolean);
           return;
         }
       } catch (e) {
@@ -363,8 +387,8 @@
 
       const img = document.createElement('img');
       img.className = 'thumb';
-      img.src = src;
-      img.alt = filenameFromPath(src);
+      img.src = src.url;
+      img.alt = src.name;
       img.loading = 'lazy';
       img.onclick = ()=>openModal(index);
 
@@ -373,15 +397,15 @@
 
       const name = document.createElement('div');
       name.className = 'name';
-      name.textContent = filenameFromPath(src);
+      name.textContent = src.name;
 
       const actions = document.createElement('div');
       actions.className = 'actions';
 
       const dl = document.createElement('a');
       dl.className = 'download-link';
-      dl.href = src;
-      dl.setAttribute('download', filenameFromPath(src));
+      dl.href = src.url;
+      dl.setAttribute('download', src.name);
       dl.textContent = 'Download';
 
       actions.appendChild(dl);
@@ -405,9 +429,22 @@
         galleryEl.style.display = '';
       }
 
-      renderedList.forEach((src, i) => {
-        const c = createCard(src, i);
-        galleryEl.appendChild(c);
+      const groups = renderedList.reduce((grouped, photo, index) => {
+        const person = photo.person || 'ALC Members';
+        if (!grouped[person]) grouped[person] = [];
+        grouped[person].push({ photo, index });
+        return grouped;
+      }, {});
+
+      Object.entries(groups).forEach(([person, entries]) => {
+        const section = document.createElement('section');
+        section.className = 'person-section';
+        section.innerHTML = `<h2 class="person-heading">${person}<small>${entries.length} photo${entries.length === 1 ? '' : 's'}</small></h2>`;
+        const grid = document.createElement('div');
+        grid.className = 'gallery';
+        entries.forEach(({ photo, index }) => grid.appendChild(createCard(photo, index)));
+        section.appendChild(grid);
+        galleryEl.appendChild(section);
       });
     }
 
@@ -427,12 +464,12 @@
     function openModal(i){
       if(i < 0 || i >= renderedList.length) return;
       currentIndex = i;
-      const src = renderedList[i];
-      modalImg.src = src;
-      modalImg.alt = filenameFromPath(src);
-      modalDownload.href = src;
-      modalDownload.setAttribute('download', filenameFromPath(src));
-      modalOpen.href = src;
+      const photo = renderedList[i];
+      modalImg.src = photo.url;
+      modalImg.alt = photo.name;
+      modalDownload.href = photo.url;
+      modalDownload.setAttribute('download', photo.name);
+      modalOpen.href = photo.url;
       modal.classList.add('open');
       modal.setAttribute('aria-hidden', 'false');
       // focus close button for accessibility
