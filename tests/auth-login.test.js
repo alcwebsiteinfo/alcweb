@@ -50,11 +50,13 @@ async function runLoginScenario() {
   await new Promise((resolve) => setImmediate(resolve));
 
   return {
-    savedMember: window.localStorage.getItem('alcwebMember')
+    savedMember: window.localStorage.getItem('alcwebMember'),
+    expiresAt: Number(window.localStorage.getItem('alcwebMemberExpires'))
   };
 }
 
 runLoginScenario().then((result) => {
   assert.strictEqual(result.savedMember, '12369', 'Login should save the authenticated member on submit');
+  assert.ok(result.expiresAt > Date.now(), 'Login should create a future session expiry time');
   console.log('auth login regression test passed');
 });
