@@ -1,4 +1,6 @@
 const ALC_AUTH_KEY = 'alcwebMember';
+const ALC_AUTH_EXPIRES_KEY = 'alcwebMemberExpires';
+const ALC_SESSION_DURATION = 10 * 60 * 1000;
 const ALC_AUTH_ENDPOINT = window.ALC_AUTH_ENDPOINT || '';
 const ALC_MEMBERS = [
   {
@@ -41,7 +43,13 @@ const ALC_MEMBERS = [
 const LOGIN_PAGE = 'index.html';
 
 function getSavedMember() {
-  return localStorage.getItem(ALC_AUTH_KEY);
+  const member = localStorage.getItem(ALC_AUTH_KEY);
+  const expiresAt = Number(localStorage.getItem(ALC_AUTH_EXPIRES_KEY));
+  if (!member || !expiresAt || Date.now() >= expiresAt) {
+    clearAuth();
+    return null;
+  }
+  return member;
 }
 
 function isAuthenticated() {
@@ -50,10 +58,12 @@ function isAuthenticated() {
 
 function saveMember(username) {
   localStorage.setItem(ALC_AUTH_KEY, username);
+  localStorage.setItem(ALC_AUTH_EXPIRES_KEY, String(Date.now() + ALC_SESSION_DURATION));
 }
 
 function clearAuth() {
   localStorage.removeItem(ALC_AUTH_KEY);
+  localStorage.removeItem(ALC_AUTH_EXPIRES_KEY);
 }
 
 function findMember(identifier) {
@@ -85,12 +95,6 @@ function redirectToLogin() {
 function requireAuth() {
   const currentPage = window.location.pathname.replace(/^.*\//, '');
   if (currentPage === LOGIN_PAGE || currentPage === 'login.html') return;
-  // allow viewing a public profile by visiting profile.html?user=<username>
-  try {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (currentPage === 'profile.html' && urlParams.get('user')) return;
-  } catch (e) {}
-
   if (!isAuthenticated()) {
     redirectToLogin();
   }
@@ -101,12 +105,6 @@ function requireAuth() {
   try {
     const currentPage = (typeof window !== 'undefined') ? window.location.pathname.replace(/^.*\//, '') : '';
     if (currentPage && currentPage !== LOGIN_PAGE && currentPage !== 'login.html') {
-      // allow public profile view via ?user
-      try {
-        const urlParams = (typeof window !== 'undefined') ? new URLSearchParams(window.location.search) : new URLSearchParams();
-        if (currentPage === 'profile.html' && urlParams.get('user')) return;
-      } catch (e) {}
-
       if (!isAuthenticated()) {
         redirectToLogin();
       }
@@ -130,6 +128,16 @@ function initializeLogout() {
     clearAuth();
     window.location.assign(LOGIN_PAGE);
   });
+}
+
+function initializeSessionExpiry() {
+  if (!isAuthenticated()) return;
+  const expiresAt = Number(localStorage.getItem(ALC_AUTH_EXPIRES_KEY));
+  const remaining = expiresAt - Date.now();
+  window.setTimeout(() => {
+    clearAuth();
+    window.location.assign(LOGIN_PAGE);
+  }, Math.max(0, remaining));
 }
 
 function updateActiveNavLink() {
@@ -203,6 +211,7 @@ function initializeAuth() {
   updateAuthLink();
   updateActiveNavLink();
   initializeLogout();
+  initializeSessionExpiry();
   if (currentPage === LOGIN_PAGE || currentPage === 'login.html') {
     const loginForm = document.getElementById('loginForm');
     loginForm?.addEventListener('submit', handleLoginForm);
