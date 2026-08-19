@@ -123,6 +123,15 @@ function updateAuthLink() {
   authLink.href = 'profile.html';
 }
 
+function initializeLogout() {
+  const logoutButton = document.getElementById('logoutButton');
+  if (!logoutButton) return;
+  logoutButton.addEventListener('click', () => {
+    clearAuth();
+    window.location.assign(LOGIN_PAGE);
+  });
+}
+
 function updateActiveNavLink() {
   const currentPage = window.location.pathname.replace(/^.*\//, '') || 'index.html';
   document.querySelectorAll('.navbar-nav .nav-link').forEach((link) => {
@@ -193,6 +202,7 @@ function initializeAuth() {
   }
   updateAuthLink();
   updateActiveNavLink();
+  initializeLogout();
   if (currentPage === LOGIN_PAGE || currentPage === 'login.html') {
     const loginForm = document.getElementById('loginForm');
     loginForm?.addEventListener('submit', handleLoginForm);
