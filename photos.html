@@ -171,9 +171,77 @@
     @media (max-width:520px){
       header{flex-direction:column;align-items:flex-start;gap:10px}
     }
+
+    /* Keep this legacy gallery layout from overriding the shared site shell. */
+    body.photos-page {
+      font-family: "DM Sans", system-ui, sans-serif;
+      background: var(--bs-body-bg);
+      color: var(--bs-body-color);
+    }
+
+    .photos-page .navbar .container {
+      margin: 0 auto;
+      padding: 0 0.75rem;
+    }
+
+    .photos-page .photo-app {
+      max-width: var(--container-max);
+      margin: 2.5rem auto;
+      padding: 0 0.75rem;
+    }
+
+    .photos-page .photo-app h1 {
+      font-family: Fraunces, Georgia, serif;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      color: #17221d;
+    }
+
+    .photos-page .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: none;
+    }
+
+    .photos-page .btn-ghost {
+      color: var(--primary-strong);
+      border-color: rgba(226, 85, 63, 0.25);
+      background: transparent;
+    }
+
+    .photos-page .btn-ghost:hover {
+      color: #fff;
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .photos-page .primary {
+      background: var(--primary);
+    }
+
+    .photos-page .download-link {
+      color: var(--primary-strong);
+      border-color: rgba(226, 85, 63, 0.18);
+    }
+
+    .photos-page .empty {
+      border: 1px dashed var(--border);
+      background: rgba(255, 255, 255, 0.55);
+    }
+
+    @media (max-width: 520px) {
+      .photos-page .photo-app {
+        margin-top: 1.5rem;
+      }
+
+      .photos-page .controls {
+        width: 100%;
+        flex-wrap: wrap;
+      }
+    }
   </style>
 </head>
-<body>
+<body class="photos-page">
   <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
     <div class="container">
       <a class="navbar-brand fw-bold text-uppercase" href="index.html">ALC Website</a>
@@ -192,7 +260,7 @@
       </div>
     </div>
   </nav>
-  <div class="container" id="app">
+  <div class="photo-app" id="app">
     <header>
       <div>
         <h1>Members Photo Gallery</h1>
@@ -250,11 +318,7 @@
     // === IMAGE LIST (prefer server-provided `images/list.json`) ===
     // We try the JSON first, falling back to a small manual list.
     let images = [];
-    const manualImages = [
-      'images/photo1.jpg',
-      'images/photo2.jpg',
-      'images/photo3.jpg'
-    ];
+    const manualImages = [];
 
     async function loadImagesList() {
       try {
@@ -438,8 +502,7 @@
      * - To enable: include JSZip via CDN and uncomment the code below.
      *
      * Example (add into the <head> or before this script runs):
-     * <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-     * <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    * Add JSZip and FileSaver script tags before this inline script if enabling this feature.
      *
      * Then implement the downloadAll() function to fetch each image as blob and add to zip.
      ************************************************************************/
