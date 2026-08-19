@@ -1,22 +1,22 @@
 :root {
   color-scheme: light;
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: "DM Sans", system-ui, sans-serif;
   font-size: 16px;
   line-height: 1.65;
-  background: #eef3fb;
-  color: #0f172a;
-  --bs-body-bg: #eef3fb;
-  --bs-body-color: #0f172a;
+  background: #f5f7f2;
+  color: #17221d;
+  --bs-body-bg: #f5f7f2;
+  --bs-body-color: #17221d;
   --surface: #ffffff;
-  --surface-soft: #f8f9fc;
-  --surface-strong: #f0f4ff;
-  --border: rgba(15, 23, 42, 0.08);
-  --primary: #2563eb;
-  --primary-soft: rgba(37, 99, 235, 0.12);
-  --primary-strong: #0b4ecd;
-  --muted: #56617a;
-  --shadow: 0 24px 80px rgba(15, 23, 42, 0.08);
-  --radius: 1rem;
+  --surface-soft: #edf1e9;
+  --surface-strong: #e3eee8;
+  --border: rgba(23, 34, 29, 0.12);
+  --primary: #e2553f;
+  --primary-soft: rgba(226, 85, 63, 0.12);
+  --primary-strong: #b83e2e;
+  --muted: #657269;
+  --shadow: 0 24px 70px rgba(23, 34, 29, 0.12);
+  --radius: 0.75rem;
   --container-max: 1100px;
 }
 
@@ -31,10 +31,22 @@ html {
 body {
   min-height: 100vh;
   margin: 0;
-  background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 28%),
-    radial-gradient(circle at bottom right, rgba(37, 99, 235, 0.06), transparent 22%),
+  background: linear-gradient(135deg, rgba(226, 85, 63, 0.05), transparent 35%),
+    linear-gradient(315deg, rgba(34, 117, 93, 0.07), transparent 40%),
     var(--bs-body-bg);
   color: var(--bs-body-color);
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  background-image: linear-gradient(rgba(23, 34, 29, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(23, 34, 29, 0.035) 1px, transparent 1px);
+  background-size: 36px 36px;
+  mask-image: linear-gradient(to bottom, black, transparent 75%);
 }
 
 /* Improve font smoothing and basic layout rhythm */
@@ -70,13 +82,16 @@ textarea {
 }
 
 .navbar {
-  background: rgba(255, 255, 255, 0.98);
+  background: rgba(245, 247, 242, 0.9);
   backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  border-bottom: 1px solid var(--border);
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 .navbar-brand {
-  letter-spacing: 0.06em;
+  letter-spacing: 0.03em;
+  color: #17221d;
 }
 
 .navbar .nav-link {
@@ -86,12 +101,12 @@ textarea {
 
 .navbar .nav-link.active,
 .navbar .nav-link:hover {
-  color: var(--primary-strong);
+  color: var(--primary);
 }
 
 .hero {
   position: relative;
-  padding: 6rem 0 4rem;
+  padding: 7rem 0 5rem;
   overflow: hidden;
 }
 
@@ -113,9 +128,14 @@ textarea {
 
 /* Headings */
 h1, h2, h3, h4 {
-  color: #071133;
+  color: #17221d;
   letter-spacing: -0.02em;
   margin-top: 0.25rem;
+}
+
+h1, h2 {
+  font-family: Fraunces, Georgia, serif;
+  font-weight: 700;
 }
 
 h1 {
@@ -134,8 +154,8 @@ h2 {
 }
 
 .feature-card {
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  border-radius: 1.15rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   background: rgba(255, 255, 255, 0.96);
   transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
 }
@@ -143,7 +163,7 @@ h2 {
 .feature-card:hover {
   transform: translateY(-6px);
   box-shadow: var(--shadow);
-  border-color: rgba(37, 99, 235, 0.18);
+  border-color: rgba(226, 85, 63, 0.35);
 }
 
 .section-title {
@@ -170,7 +190,8 @@ h2 {
 
 /* Buttons: slightly larger, consistent radii and soft shadows */
 .btn {
-  border-radius: 0.9rem;
+  border-radius: 0.65rem;
+  font-weight: 700;
   transition: transform 0.16s ease, box-shadow 0.16s ease;
 }
 .btn:active {
@@ -242,23 +263,24 @@ input:focus, textarea:focus, select:focus {
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.15), transparent 32%),
-    radial-gradient(circle at bottom right, rgba(134, 239, 172, 0.12), transparent 28%),
-    #eef3fb;
+  background: linear-gradient(135deg, rgba(226, 85, 63, 0.11), transparent 38%),
+    linear-gradient(315deg, rgba(34, 117, 93, 0.14), transparent 42%),
+    #f5f7f2;
 }
 
 .login-card {
   max-width: 460px;
   width: 100%;
-  border: none;
-  border-radius: 1.5rem;
+  border: 1px solid var(--border);
+  border-top: 5px solid var(--primary);
+  border-radius: 0.9rem;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.98);
   box-shadow: var(--shadow);
 }
 
 .login-card .card-body {
-  padding: 2.5rem;
+  padding: 2.75rem;
 }
 
 .login-card .card-body h1 {
@@ -266,7 +288,9 @@ input:focus, textarea:focus, select:focus {
 }
 
 .login-card .form-control {
-  border-radius: 0.85rem;
+  border-radius: 0.65rem;
+  border-color: var(--border);
+  background: var(--surface-soft);
 }
 
 .login-card .btn {
@@ -301,11 +325,16 @@ input:focus, textarea:focus, select:focus {
 }
 
 .login-card .btn-primary {
-  box-shadow: 0 14px 30px rgba(37, 99, 235, 0.15);
+  box-shadow: 0 14px 30px rgba(226, 85, 63, 0.2);
 }
 
 .btn-primary:hover {
   background-color: var(--primary-strong);
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  border-color: var(--primary);
 }
 
 @media (max-width: 767.98px) {
@@ -314,5 +343,13 @@ input:focus, textarea:focus, select:focus {
   }
   .hero .headline {
     font-size: 2.5rem;
+  }
+
+  .login-wrapper {
+    padding: 1rem;
+  }
+
+  .login-card .card-body {
+    padding: 2rem 1.5rem;
   }
 }
