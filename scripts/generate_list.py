@@ -19,7 +19,7 @@ import urllib.parse
 IMG_DIR = 'images'
 LIST_FILE = os.path.join(IMG_DIR, 'list.json')
 
-EXTENSIONS = ('.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp', '.tiff')
+EXTENSIONS = ('.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp', '.tiff', '.mp4', '.webm', '.ogg', '.mov')
 
 
 def main():

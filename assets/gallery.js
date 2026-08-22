@@ -1,5 +1,5 @@
 // assets/gallery.js (updated)
-// Loads images from images/list.json (if present) and supports client-side uploads (in-memory).
+// Loads images and videos from images/list.json (if present) and supports client-side uploads (in-memory).
 // Handles double-encoded URLs (e.g. %2520) by fully decoding then encoding once.
 //
 // To keep the server list in sync with actual files, run the helper script
@@ -15,6 +15,7 @@
   const gallery = document.getElementById('gallery');
   const viewerModal = new bootstrap.Modal(document.getElementById('viewerModal'));
   const viewerImage = document.getElementById('viewerImage');
+  const viewerVideo = document.getElementById('viewerVideo');
   const viewerTitle = document.getElementById('viewerTitle');
   const clearAllBtn = document.getElementById('clearAll');
   const loadServerBtn = document.getElementById('loadServer');
@@ -67,13 +68,13 @@
 
   // Add files from file input or dropped files
   function addFiles(fileList) {
-    const files = Array.from(fileList || []).filter(f => f.type && f.type.startsWith('image/'));
+    const files = Array.from(fileList || []).filter(f => f.type && (f.type.startsWith('image/') || f.type.startsWith('video/')));
     files.forEach(file => {
       const reader = new FileReader();
       reader.onload = (ev) => {
         const dataUrl = ev.target.result;
         const id = cryptoRandomId();
-        const item = { id, name: file.name, src: dataUrl, size: file.size };
+        const item = { id, name: file.name, src: dataUrl, size: file.size, type: file.type };
         items.push(item);
         appendCard(item);
       };
@@ -87,9 +88,12 @@
     col.className = 'col-sm-6 col-md-4 col-lg-3';
     col.dataset.id = item.id;
 
+    const media = isVideo(item)
+      ? `<video class="gallery-thumb" src="${item.src}" controls muted playsinline preload="metadata"></video>`
+      : `<img class="gallery-thumb" src="${item.src}" alt="${escapeHtml(item.name)}" loading="lazy">`;
     col.innerHTML = `
       <div class="card gallery-card shadow-sm">
-        <img class="gallery-thumb" src="${item.src}" alt="${escapeHtml(item.name)}" loading="lazy">
+        ${media}
         <div class="gallery-actions">
           <button class="btn btn-sm btn-dark view-btn" title="View"><i class="bi bi-eye"></i></button>
           <a class="btn btn-sm btn-primary download-btn" title="Download" href="${item.src}" download="${encodeURIComponent(item.name)}"><i class="bi bi-download"></i></a>
@@ -110,9 +114,17 @@
   }
 
   function openViewer(item) {
-    viewerImage.src = item.src;
+    const video = isVideo(item);
+    viewerImage.classList.toggle('d-none', video);
+    viewerVideo.classList.toggle('d-none', !video);
+    viewerImage.src = video ? '' : item.src;
+    viewerVideo.src = video ? item.src : '';
     viewerTitle.textContent = item.name;
     viewerModal.show();
+  }
+
+  function isVideo(item) {
+    return (item.type && item.type.startsWith('video/')) || /\.(mp4|webm|ogg|mov)$/i.test(item.name || '');
   }
 
   function removeItem(id) {
@@ -313,8 +325,9 @@
         return;
       }
       const blob = await resp.blob();
-      if (!blob.type.startsWith('image/')) {
-        console.warn('Fetched resource is not an image:', safeUrl);
+      const isVideoFile = /^video\//.test(blob.type) || /\.(mp4|webm|ogg|mov)(?:[?#].*)?$/i.test(safeUrl);
+      if (!blob.type.startsWith('image/') && !isVideoFile) {
+        console.warn('Fetched resource is not image or video:', safeUrl);
         return;
       }
 
@@ -326,6 +339,7 @@
             id,
             name: imgMeta.name || safeUrl.split('/').pop(),
             src: e.target.result,
+            type: isVideoFile ? (blob.type || 'video/mp4') : blob.type,
             size: imgMeta.size || blob.size || 0
           };
           items.push(item);
