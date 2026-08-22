@@ -17,7 +17,7 @@ const ALC_MEMBERS = [
     username: '12399',
     displayName: 'Rabiya Alam',
     role: 'IT Department President',
-    photo: 'WhatsApp Image 2026-06-05 at 12.18.44 AM.jpeg',
+    photo: 'images/WhatsApp Image 2026-06-05 at 12.18.44 AM.jpeg',
     bio: '',
     class: '',
     status: ''
