@@ -1,5 +1,7 @@
 # Google Sheets login setup
 
+Current Apps Script version: `3.0.0`.
+
 1. Create a Google Sheet. The script uses the first tab.
 2. Put these headers in row 1: `memberID`, `displayName`, `role`, `bio`, `email`, `whatsapp`, `status`, `class`, `birthDate`, `theme`, `photo`.
 3. Add one member per row below the headers. The `photo` column should contain a public Google Drive image URL.

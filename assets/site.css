@@ -305,6 +305,40 @@ input:focus, textarea:focus, select:focus {
   color: var(--primary);
 }
 
+.footer-version {
+  letter-spacing: 0.04em;
+  opacity: 0.8;
+}
+
+.credits-page .credit-feature,
+.credits-page .credit-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.credits-page .credit-feature {
+  border: 1px solid rgba(226, 85, 63, 0.28);
+  border-left: 5px solid var(--primary);
+  background: linear-gradient(135deg, rgba(226, 85, 63, 0.12), rgba(255, 255, 255, 0.72));
+}
+
+.credits-page .credit-card {
+  min-height: 12rem;
+}
+
+.credit-index {
+  display: block;
+  margin-bottom: 1.5rem;
+  color: var(--primary-strong);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+html[data-theme="dark"] .credits-page .credit-feature {
+  background: linear-gradient(135deg, rgba(226, 85, 63, 0.18), rgba(34, 44, 39, 0.85));
+}
+
 .hero-badge {
   display: inline-flex;
   align-items: center;
@@ -416,6 +450,24 @@ input:focus, textarea:focus, select:focus {
 .btn-primary {
   background-color: var(--primary);
   border-color: var(--primary);
+}
+
+html[data-theme="dark"] .bg-white,
+html[data-theme="dark"] .navbar-light,
+html[data-theme="dark"] .card-hero,
+html[data-theme="dark"] .modal-content {
+  background-color: var(--surface) !important;
+  color: var(--bs-body-color);
+}
+
+html[data-theme="dark"] .navbar-toggler {
+  filter: invert(1);
+}
+
+html[data-theme="dark"] .list-group-item {
+  background-color: var(--surface);
+  color: var(--bs-body-color);
+  border-color: var(--border);
 }
 
 @media (max-width: 767.98px) {

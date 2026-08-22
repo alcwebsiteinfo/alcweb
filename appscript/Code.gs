@@ -1,3 +1,5 @@
+const APP_SCRIPT_VERSION = '3.0.0';
+
 function doGet(e) {
   const memberID = String(e.parameter.memberID || '').trim();
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
@@ -14,7 +16,7 @@ function doGet(e) {
       sheet.getRange(rowNumber, themeIndex + 1).setValue(theme);
     }
     return ContentService
-      .createTextOutput(JSON.stringify({ saved: true, theme }))
+      .createTextOutput(JSON.stringify({ saved: true, theme, version: APP_SCRIPT_VERSION }))
       .setMimeType(ContentService.MimeType.JSON);
   }
   const profile = row ? {
@@ -32,6 +34,6 @@ function doGet(e) {
   } : null;
   const authenticated = Boolean(profile);
   return ContentService
-    .createTextOutput(JSON.stringify({ authenticated, memberID: authenticated ? memberID : '', profile }))
+    .createTextOutput(JSON.stringify({ authenticated, memberID: authenticated ? memberID : '', profile, version: APP_SCRIPT_VERSION }))
     .setMimeType(ContentService.MimeType.JSON);
 }

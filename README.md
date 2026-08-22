@@ -2,6 +2,14 @@
 
 A member website for ALC with protected pages, member profiles, image and video galleries, and Google Sheets-backed member approval.
 
+## Current Versions
+
+- Web: `18.0.0`, based on 18 commits that changed website HTML, CSS, or JavaScript.
+- Apps Script: `3.0.0`, based on 3 commits that changed `appscript/Code.gs`.
+- Repository history currently contains 22 total commits.
+
+These are history-based project versions, not Git tags. Update the footer and package version when the counting rule changes.
+
 ## Features
 
 - Google Apps Script and Google Sheets member lookup.

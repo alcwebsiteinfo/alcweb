@@ -134,3 +134,26 @@
 .modal-body img {
   max-height: 70vh;
 }
+
+html[data-theme="dark"] #dropArea {
+  background: linear-gradient(180deg, rgba(43, 55, 48, 0.95), rgba(34, 44, 39, 0.95));
+  border-color: rgba(226, 85, 63, 0.5);
+  color: var(--muted);
+}
+
+html[data-theme="dark"] .gallery-card,
+html[data-theme="dark"] .year-card {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--bs-body-color);
+}
+
+html[data-theme="dark"] .gallery-actions .btn {
+  background: rgba(34, 44, 39, 0.9);
+  border-color: var(--border);
+  color: var(--bs-body-color);
+}
+
+html[data-theme="dark"] .gallery-caption {
+  color: var(--bs-body-color);
+}

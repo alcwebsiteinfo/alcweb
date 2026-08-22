@@ -259,6 +259,35 @@
         flex-wrap: wrap;
       }
     }
+
+    html[data-theme="dark"] body.photos-page {
+      --bg: #18201d;
+      --card: #222c27;
+      --accent: #e2553f;
+      --muted: #b2beb5;
+      background: var(--bg);
+      color: #edf2ea;
+    }
+
+    html[data-theme="dark"] .photos-page .card,
+    html[data-theme="dark"] .photos-page .empty,
+    html[data-theme="dark"] .photos-page .modal-footer {
+      background: var(--card);
+      color: #edf2ea;
+      border-color: var(--border);
+    }
+
+    html[data-theme="dark"] .photos-page .meta .name,
+    html[data-theme="dark"] .photos-page header h1 {
+      color: #edf2ea;
+    }
+
+    html[data-theme="dark"] .photos-page .download-link,
+    html[data-theme="dark"] .photos-page .close-btn {
+      background: var(--surface-soft);
+      color: #edf2ea;
+      border-color: var(--border);
+    }
   </style>
 </head>
 <body class="photos-page">
@@ -301,6 +330,12 @@
       </div>
     </main>
   </div>
+
+  <footer class="footer border-top text-center">
+    <div class="container text-muted">
+      <small class="footer-version">Web v18.0.0 · Apps Script v3.0.0</small>
+    </div>
+  </footer>
 
   <!-- modal preview -->
   <div id="modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">

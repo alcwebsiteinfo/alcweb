@@ -197,7 +197,8 @@ function initializeThemeToggle() {
   const toggle = document.getElementById('themeToggle');
   if (!toggle) return;
   const currentMember = getCurrentMember();
-  const theme = currentMember?.theme || 'light';
+  const username = localStorage.getItem(ALC_AUTH_KEY);
+  const theme = (username && getSavedTheme(username)) || currentMember?.theme || 'light';
   applyTheme(theme);
   toggle.checked = theme === 'dark';
   toggle.addEventListener('change', () => saveMemberTheme(toggle.checked ? 'dark' : 'light'));
