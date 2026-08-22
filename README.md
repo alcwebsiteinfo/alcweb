@@ -58,9 +58,13 @@ The Apps Script uses the first tab of the spreadsheet. Put these headers in row 
 | B | `displayName` | Name shown on the profile |
 | C | `role` | Member role |
 | D | `bio` | Member biography |
-| E | `class` | Class or year |
-| F | `status` | Member status |
-| G | `photo` | Public image URL, preferably a Google Drive direct-view URL |
+| E | `email` | Member email address |
+| F | `whatsapp` | WhatsApp number with country code |
+| G | `status` | Member status |
+| H | `class` | Class or year |
+| I | `birthDate` | Member birth date and year, for example `15 March 2008` |
+| J | `theme` | Saved preference: `light` or `dark` |
+| K | `photo` | Public image URL, preferably a Google Drive direct-view URL |
 
 Add one member per row below the headers. The `memberID` must be unique.
 

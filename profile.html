@@ -10,7 +10,7 @@
   <link href="assets/site.css" rel="stylesheet">
   <script src="assets/auth.js"></script>
 </head>
-<body>
+<body class="profile-page">
   <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
     <div class="container">
       <a class="navbar-brand fw-bold text-uppercase" href="index.html">ALC Website</a>
@@ -43,12 +43,16 @@
     </div>
   </nav>
 
-  <main class="container py-5">
+  <main id="profilePage" class="container py-5">
     <div class="row mb-4">
       <div class="col-12">
-        <p class="section-title">Member Profile</p>
+        <p id="profileKicker" class="section-title">Member Profile</p>
         <h1 id="profileTitle" class="fw-bold">Loading profile...</h1>
         <p id="profileSubtitle" class="text-muted">Welcome to your ALC member dashboard.</p>
+        <label class="theme-switch" for="themeToggle">
+          <input id="themeToggle" type="checkbox">
+          <span>Dark mode</span>
+        </label>
       </div>
     </div>
 
@@ -69,6 +73,8 @@
       const requestedUsername = urlParams.get('user');
       const currentMember = getCurrentMember();
       const selectedMember = requestedUsername ? findMember(requestedUsername) : currentMember;
+      const page = document.getElementById('profilePage');
+      const kicker = document.getElementById('profileKicker');
       const title = document.getElementById('profileTitle');
       const subtitle = document.getElementById('profileSubtitle');
       const content = document.getElementById('profileContent');
@@ -80,9 +86,14 @@
         return;
       }
 
-      const isOwnProfile = currentMember && currentMember.username === selectedMember.username;
+      const currentMemberID = currentMember?.username || currentMember?.memberID;
+      const selectedMemberID = selectedMember.username || selectedMember.memberID;
+      const isOwnProfile = currentMember && currentMemberID === selectedMemberID;
+      page.classList.toggle('own-profile', isOwnProfile);
+      page.classList.toggle('member-info-page', !isOwnProfile);
+      kicker.textContent = isOwnProfile ? 'Your Profile' : 'Member Details';
       title.textContent = isOwnProfile ? `Welcome, ${selectedMember.displayName}` : `${selectedMember.displayName}`;
-      subtitle.textContent = isOwnProfile ? 'This is your personal ALC profile.' : 'Viewing a member profile.';
+      subtitle.textContent = isOwnProfile ? 'Your personal ALC member information.' : `More information about ${selectedMember.displayName}.`;
       const profilePhoto = selectedMember.photo || 'images/pfp images/raihan.jpg';
 
       content.innerHTML = `
@@ -97,21 +108,27 @@
         </div>
         <div class="col-lg-8">
           <div class="card h-100 shadow-sm p-4">
-            <h3 class="h5">About this member</h3>
+            <h3 class="h5">${isOwnProfile ? 'About you' : `About ${selectedMember.displayName}`}</h3>
             <p class="text-muted mb-4">${selectedMember.bio || 'Profile details are not available yet. Check back later for a full bio.'}</p>
             <dl class="row">
               <dt class="col-sm-3">Name</dt>
               <dd class="col-sm-9">${selectedMember.displayName}</dd>
               <dt class="col-sm-3">Member ID</dt>
-              <dd class="col-sm-9">${selectedMember.username}</dd>
+              <dd class="col-sm-9">${selectedMemberID}</dd>
               <dt class="col-sm-3">Class</dt>
               <dd class="col-sm-9">${selectedMember.class || 'Not specified'}</dd>
               <dt class="col-sm-3">Status</dt>
               <dd class="col-sm-9">${selectedMember.status || 'Not specified'}</dd>
+              <dt class="col-sm-3">Birth date</dt>
+              <dd class="col-sm-9">${selectedMember.birthDate || 'Not specified'}</dd>
+              <dt class="col-sm-3">Email</dt>
+              <dd class="col-sm-9">${selectedMember.email ? `<a href="mailto:${selectedMember.email}">${selectedMember.email}</a>` : 'Not specified'}</dd>
+              <dt class="col-sm-3">WhatsApp</dt>
+              <dd class="col-sm-9">${selectedMember.whatsapp ? `<a href="https://wa.me/${selectedMember.whatsapp.replace(/\D/g, '')}" target="_blank" rel="noopener">${selectedMember.whatsapp}</a>` : 'Not specified'}</dd>
               <dt class="col-sm-3">Profile access</dt>
               <dd class="col-sm-9">${isOwnProfile ? 'Your own member profile' : 'Shared member details'}</dd>
             </dl>
-            ${isOwnProfile ? '<a href="about.html" class="btn btn-primary mt-3 me-2">Visit team page</a><button id="logoutBtn" class="btn btn-outline-danger mt-3">Log out</button>' : ''}
+            ${isOwnProfile ? '<a href="about.html" class="btn btn-primary mt-3 me-2">Visit team page</a><button id="logoutBtn" class="btn btn-outline-danger mt-3">Log out</button>' : '<a href="about.html" class="btn btn-outline-primary mt-3">Back to members</a>'}
           </div>
         </div>
       `;

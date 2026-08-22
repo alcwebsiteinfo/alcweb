@@ -20,6 +20,18 @@
   --container-max: 1100px;
 }
 
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --bs-body-bg: #18201d;
+  --bs-body-color: #edf2ea;
+  --surface: #222c27;
+  --surface-soft: #2b3730;
+  --surface-strong: #35443b;
+  --border: rgba(237, 242, 234, 0.14);
+  --muted: #b2beb5;
+  --shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -47,6 +59,62 @@ body::before {
     linear-gradient(90deg, rgba(23, 34, 29, 0.035) 1px, transparent 1px);
   background-size: 36px 36px;
   mask-image: linear-gradient(to bottom, black, transparent 75%);
+}
+
+html[data-theme="dark"] body {
+  background: linear-gradient(135deg, rgba(226, 85, 63, 0.1), transparent 35%),
+    linear-gradient(315deg, rgba(34, 117, 93, 0.14), transparent 40%),
+    var(--bs-body-bg);
+}
+
+html[data-theme="dark"] .navbar,
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .card-transparent,
+html[data-theme="dark"] .feature-card,
+html[data-theme="dark"] .login-card {
+  background-color: var(--surface);
+  color: var(--bs-body-color);
+  border-color: var(--border);
+}
+
+html[data-theme="dark"] .navbar-brand,
+html[data-theme="dark"] h1,
+html[data-theme="dark"] h2,
+html[data-theme="dark"] h3,
+html[data-theme="dark"] h4,
+html[data-theme="dark"] .form-label {
+  color: var(--bs-body-color);
+}
+
+html[data-theme="dark"] .text-muted,
+html[data-theme="dark"] .page-intro,
+html[data-theme="dark"] .footer,
+html[data-theme="dark"] .footer a {
+  color: var(--muted) !important;
+}
+
+html[data-theme="dark"] .login-card .form-control {
+  background: var(--surface-soft);
+  color: var(--bs-body-color);
+}
+
+.theme-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 0.5rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.theme-switch input {
+  width: 2.6rem;
+  height: 1.35rem;
+  margin: 0;
+  accent-color: var(--primary);
+  cursor: pointer;
 }
 
 /* Improve font smoothing and basic layout rhythm */
@@ -326,6 +394,19 @@ input:focus, textarea:focus, select:focus {
 
 .login-card .btn-primary {
   box-shadow: 0 14px 30px rgba(226, 85, 63, 0.2);
+}
+
+.profile-page .member-info-page .card {
+  border-top: 4px solid var(--surface-strong);
+}
+
+.profile-page .member-info-page .card-img-top {
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.profile-page .own-profile .card:first-child {
+  border-top: 4px solid var(--primary);
 }
 
 .btn-primary:hover {

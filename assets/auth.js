@@ -2,7 +2,7 @@ const ALC_AUTH_KEY = 'alcwebMember';
 const ALC_AUTH_EXPIRES_KEY = 'alcwebMemberExpires';
 const ALC_PROFILE_KEY = 'alcwebProfile';
 const ALC_SESSION_DURATION = 10 * 60 * 1000;
-const ALC_AUTH_ENDPOINT = window.ALC_AUTH_ENDPOINT || '';
+const ALC_AUTH_ENDPOINT = window.ALC_AUTH_ENDPOINT || 'https://script.google.com/macros/s/AKfycbyfxKSYHeyRMr4tI9BcB6GpDeKW6tHRlb6_SD3CVVmVUoeoDvftjTqdMARehQxlCaHf/exec';
 const ALC_MEMBERS = [
   {
     username: '12369',
@@ -62,6 +62,32 @@ function saveMember(username) {
   localStorage.setItem(ALC_AUTH_EXPIRES_KEY, String(Date.now() + ALC_SESSION_DURATION));
 }
 
+function applyTheme(theme) {
+  const selectedTheme = theme === 'dark' ? 'dark' : 'light';
+  document.documentElement.dataset.theme = selectedTheme;
+  document.documentElement.style.colorScheme = selectedTheme;
+}
+
+function getSavedTheme(username) {
+  return localStorage.getItem(`alcwebTheme:${username}`) || '';
+}
+
+function saveMemberTheme(theme) {
+  const username = getSavedMember();
+  if (!username) return;
+  const selectedTheme = theme === 'dark' ? 'dark' : 'light';
+  localStorage.setItem(`alcwebTheme:${username}`, selectedTheme);
+  try {
+    const savedProfile = JSON.parse(localStorage.getItem(ALC_PROFILE_KEY) || 'null');
+    if (savedProfile && savedProfile.memberID === username) {
+      savedProfile.theme = selectedTheme;
+      localStorage.setItem(ALC_PROFILE_KEY, JSON.stringify(savedProfile));
+    }
+  } catch (e) {}
+  applyTheme(selectedTheme);
+  fetch(`${ALC_AUTH_ENDPOINT}?action=saveTheme&memberID=${encodeURIComponent(username)}&theme=${selectedTheme}`).catch(() => {});
+}
+
 function clearAuth() {
   localStorage.removeItem(ALC_AUTH_KEY);
   localStorage.removeItem(ALC_AUTH_EXPIRES_KEY);
@@ -87,7 +113,7 @@ function getCurrentMember() {
   if (!username) return null;
   try {
     const savedProfile = JSON.parse(localStorage.getItem(ALC_PROFILE_KEY) || 'null');
-    if (savedProfile && savedProfile.memberID === username) return savedProfile;
+    if (savedProfile && savedProfile.memberID === username) return { ...savedProfile, theme: getSavedTheme(username) || savedProfile.theme || 'light' };
   } catch (e) {}
   return findMember(username) || {
     username,
@@ -153,6 +179,28 @@ function initializeSessionExpiry() {
     clearAuth();
     window.location.assign(LOGIN_PAGE);
   }, Math.max(0, remaining));
+}
+
+function initializeTheme() {
+  const username = localStorage.getItem(ALC_AUTH_KEY);
+  let savedTheme = username ? getSavedTheme(username) : '';
+  if (username && !savedTheme) {
+    try {
+      const profile = JSON.parse(localStorage.getItem(ALC_PROFILE_KEY) || 'null');
+      savedTheme = profile?.memberID === username ? profile.theme : '';
+    } catch (e) {}
+  }
+  applyTheme(savedTheme || 'light');
+}
+
+function initializeThemeToggle() {
+  const toggle = document.getElementById('themeToggle');
+  if (!toggle) return;
+  const currentMember = getCurrentMember();
+  const theme = currentMember?.theme || 'light';
+  applyTheme(theme);
+  toggle.checked = theme === 'dark';
+  toggle.addEventListener('change', () => saveMemberTheme(toggle.checked ? 'dark' : 'light'));
 }
 
 function updateActiveNavLink() {
@@ -228,11 +276,14 @@ function initializeAuth() {
   updateActiveNavLink();
   initializeLogout();
   initializeSessionExpiry();
+  initializeThemeToggle();
   if (currentPage === LOGIN_PAGE || currentPage === 'login.html') {
     const loginForm = document.getElementById('loginForm');
     loginForm?.addEventListener('submit', handleLoginForm);
   }
 }
+
+initializeTheme();
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initializeAuth, { once: true });
