@@ -297,7 +297,7 @@
     <main>
       <div id="gallery" class="gallery" aria-live="polite"></div>
       <div id="empty" class="empty" style="display:none;">
-        No photos found. Add images to the "images/" folder and update the images list in this file.
+        No photos found. Add media to the "media/image/" or "media/video/" folder and regenerate the media list.
       </div>
     </main>
   </div>
@@ -323,26 +323,26 @@
   <script>
     /***********************************************
      * Usage:
-     * - Place your image files in a folder next to this HTML file, e.g. "images/".
+    * - Place image files in "media/image/" and video files in "media/video/".
      * - Edit the "images" array below to list filenames or relative paths.
      * - Each image will be shown with a preview and a download button.
      *
      * Optional advanced automation:
-     * - If your server can provide a JSON list of filenames (e.g. at /images/list.json),
+    * - If your server can provide a JSON list of filenames (e.g. at /media/list.json),
      *   replace the manual array with a fetch() to that endpoint and call render().
      *
      * Notes for GitHub Pages:
-     * - When hosted on GitHub Pages, keep the paths relative (e.g. "images/photo.jpg").
+    * - When hosted on GitHub Pages, keep the paths relative (e.g. "media/image/photo.jpg").
      ***********************************************/
 
-    // === IMAGE LIST (prefer server-provided `images/list.json`) ===
+    // === IMAGE LIST (prefer server-provided `media/list.json`) ===
     // We try the JSON first, falling back to a small manual list.
     let images = [];
     const manualImages = [];
 
     async function loadImagesList() {
       try {
-        const resp = await fetch('images/list.json', { cache: 'no-cache' });
+        const resp = await fetch('media/list.json', { cache: 'no-cache' });
         if (!resp.ok) throw new Error('no list.json');
         const data = await resp.json();
         if (Array.isArray(data)) {

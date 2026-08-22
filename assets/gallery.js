@@ -1,10 +1,10 @@
 // assets/gallery.js (updated)
-// Loads images and videos from images/list.json (if present) and supports client-side uploads (in-memory).
+// Loads images and videos from media/list.json (if present) and supports client-side uploads (in-memory).
 // Handles double-encoded URLs (e.g. %2520) by fully decoding then encoding once.
 //
 // To keep the server list in sync with actual files, run the helper script
-// ``scripts/generate_list.py`` from the project root; it will re‑scan
-// ``images/`` and overwrite ``images/list.json`` with all recognized
+// ``scripts/generate_list.py`` from the project root; it will re-scan
+// ``media/image/`` and ``media/video/`` and overwrite ``media/list.json`` with all recognized
 // image files.  This is much easier than manually editing the JSON when new
 // pictures arrive.
 
@@ -61,7 +61,7 @@
     loadListJson();
   });
 
-  // Try to load images/list.json automatically on page load
+  // Try to load media/list.json automatically on page load
   window.addEventListener('load', () => {
     loadListJson();
   });
@@ -135,9 +135,9 @@
     if (el) el.remove();
   }
 
-  // Load images listed in images/list.json
+  // Load media listed in media/list.json
   async function loadListJson() {
-    const listUrl = 'images/list.json';
+    const listUrl = 'media/list.json';
     console.info('Attempting to fetch', listUrl);
     try {
       const resp = await fetch(listUrl, { cache: 'no-cache' });
@@ -147,7 +147,7 @@
       }
       const data = await resp.json();
       if (!Array.isArray(data)) {
-        console.warn('images/list.json is not an array.');
+        console.warn('media/list.json is not an array.');
         return;
       }
 
@@ -161,7 +161,7 @@
       await loadNextBatch();
       console.info('Prepared batch loading from list.json');
     } catch (err) {
-      console.warn('Could not load images/list.json:', err);
+      console.warn('Could not load media/list.json:', err);
     }
   }
 
