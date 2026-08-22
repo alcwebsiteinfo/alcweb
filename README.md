@@ -38,7 +38,7 @@ A member website for ALC with protected pages, member profiles, image and video 
 │   ├── video/              Website video files
 │   └── list.json           Generated image and video index
 ├── images/
-│   └── pfp/                Member profile pictures used by About and profiles
+│   └── pfp images/         Member profile pictures used by About and profiles
 ├── appscript/
 │   ├── Code.gs             Google Apps Script endpoint
 │   └── README.md           Apps Script setup instructions
@@ -90,7 +90,7 @@ This ID-only login is an approval lookup, not password authentication. It is not
 
 ## Media Management
 
-Put gallery images in `media/image/`, videos in `media/video/`, and member profile pictures in `images/pfp/`. Supported formats include:
+Put gallery images in `media/image/`, videos in `media/video/`, and member profile pictures in `images/pfp images/`. Supported formats include:
 
 - Images: PNG, JPG, JPEG, GIF, WEBP, BMP, and TIFF
 - Videos: MP4, WEBM, OGG, and MOV
