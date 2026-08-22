@@ -8,7 +8,7 @@ const ALC_MEMBERS = [
     username: '12369',
     displayName: 'Raihan',
     role: 'IT Department President',
-    photo: 'media/image/raihan.jpg',
+    photo: 'images/pfp/raihan.jpg',
     bio: 'Raihan oversees ALC technology operations, coordinates member systems, and ensures secure, reliable IT services for the community.',
     class: '2nd',
     status: 'level 0'
@@ -17,7 +17,7 @@ const ALC_MEMBERS = [
     username: '12399',
     displayName: 'Rabiya Alam',
     role: 'IT Department President',
-    photo: 'media/image/WhatsApp Image 2026-06-05 at 12.18.44 AM.jpeg',
+    photo: 'images/pfp/WhatsApp Image 2026-06-05 at 12.18.44 AM.jpeg',
     bio: '',
     class: '',
     status: ''
@@ -26,7 +26,7 @@ const ALC_MEMBERS = [
     username: 'samiya',
     displayName: 'Samiya',
     role: 'Head Chef',
-    photo: 'media/image/samiya.jpg.jpg',
+    photo: 'images/pfp/samiya.jpg.jpg',
     bio: 'Samiya leads ALC culinary events, plans menus, manages kitchen logistics, and creates memorable dining experiences for the community.',
     class: '',
     status: ''
@@ -35,7 +35,7 @@ const ALC_MEMBERS = [
     username: 'hridda',
     displayName: 'Hridda',
     role: 'Vice President, IT Dept. and President, Arts & Crafts Club',
-    photo: 'media/image/hridda.jpg',
+    photo: 'images/pfp/hridda.jpg',
     bio: 'Hridda supports ALC technology leadership as IT vice president, leads the Arts & Crafts club, and documents community life through photography.',
     class: '',
     status: ''

@@ -83,7 +83,7 @@
       const isOwnProfile = currentMember && currentMember.username === selectedMember.username;
       title.textContent = isOwnProfile ? `Welcome, ${selectedMember.displayName}` : `${selectedMember.displayName}`;
       subtitle.textContent = isOwnProfile ? 'This is your personal ALC profile.' : 'Viewing a member profile.';
-      const profilePhoto = selectedMember.photo || 'media/image/raihan.jpg';
+      const profilePhoto = selectedMember.photo || 'images/pfp/raihan.jpg';
 
       content.innerHTML = `
         <div class="col-lg-4">
