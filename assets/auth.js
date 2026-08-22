@@ -1,5 +1,6 @@
 const ALC_AUTH_KEY = 'alcwebMember';
 const ALC_AUTH_EXPIRES_KEY = 'alcwebMemberExpires';
+const ALC_PROFILE_KEY = 'alcwebProfile';
 const ALC_SESSION_DURATION = 10 * 60 * 1000;
 const ALC_AUTH_ENDPOINT = window.ALC_AUTH_ENDPOINT || '';
 const ALC_MEMBERS = [
@@ -64,6 +65,7 @@ function saveMember(username) {
 function clearAuth() {
   localStorage.removeItem(ALC_AUTH_KEY);
   localStorage.removeItem(ALC_AUTH_EXPIRES_KEY);
+  localStorage.removeItem(ALC_PROFILE_KEY);
 }
 
 function findMember(identifier) {
@@ -82,7 +84,20 @@ function findMember(identifier) {
 
 function getCurrentMember() {
   const username = getSavedMember();
-  return username ? findMember(username) : null;
+  if (!username) return null;
+  try {
+    const savedProfile = JSON.parse(localStorage.getItem(ALC_PROFILE_KEY) || 'null');
+    if (savedProfile && savedProfile.memberID === username) return savedProfile;
+  } catch (e) {}
+  return findMember(username) || {
+    username,
+    displayName: username,
+    role: 'ALC Member',
+    photo: '',
+    bio: 'Your member profile is active. Profile details can be added by an administrator.',
+    class: '',
+    status: 'Approved member'
+  };
 }
 
 function redirectToLogin() {
@@ -163,7 +178,7 @@ async function verifyMember(identifier) {
   if (!response.ok) throw new Error('Login service request failed.');
 
   const result = await response.json();
-  return result.authenticated === true && result.memberID === identifier;
+  return result.authenticated === true && result.memberID === identifier ? result : null;
 }
 
 async function handleLoginForm(event) {
@@ -181,9 +196,10 @@ async function handleLoginForm(event) {
   if (feedback) feedback.textContent = '';
 
   try {
-    const isApproved = await verifyMember(username);
-    if (isApproved) {
+    const profile = await verifyMember(username);
+    if (profile) {
       saveMember(username);
+      localStorage.setItem(ALC_PROFILE_KEY, JSON.stringify(profile.profile || {}));
       const urlParams = new URLSearchParams(window.location.search);
       const redirect = urlParams.get('redirect') || 'home.html';
       const redirectTarget = redirect.startsWith('http') ? redirect : new URL(redirect, window.location.href).toString();
